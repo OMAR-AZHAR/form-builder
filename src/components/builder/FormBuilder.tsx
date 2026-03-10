@@ -168,12 +168,16 @@ export const FormBuilder = memo(function FormBuilder({
 
     try {
       const config = dispatch(getFormConfigThunk());
-      await formApi.submitForm(config.id, formValues);
+      const labeledValues: Record<string, FieldValue> = {};
+      for (const field of config.fields) {
+        labeledValues[field.label || field.id] = formValues[field.id];
+      }
+      await formApi.submitForm(config.id, labeledValues);
       onToast("success", ToastMessages.submitSuccess);
     } catch {
       onToast("error", ToastMessages.saveFailed);
     }
-  }, [dispatch, formValues, onToast]);
+  }, [dispatch, fields, formValues, onToast]);
 
   const handleFieldChange = useCallback(
     (fieldId: string, value: FieldValue) =>

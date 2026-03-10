@@ -18,26 +18,6 @@ export default defineConfig(({ mode }) => {
         "@": resolve(__dirname, "src"),
       },
     },
-    build: {
-      minify: "esbuild",
-      target: "es2022",
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            vendor: ["react", "react-dom", "@reduxjs/toolkit", "react-redux"],
-            dnd: ["@dnd-kit/core", "@dnd-kit/sortable", "@dnd-kit/utilities"],
-          },
-        },
-        treeshake: {
-          moduleSideEffects: false,
-          preset: "recommended",
-        },
-      },
-    },
-    esbuild: {
-      drop: ["console", "debugger"],
-      legalComments: "none",
-    },
     test: {
       globals: true,
       environment: "jsdom",
