@@ -42,9 +42,9 @@ export const Button = memo(function Button({
     <button
       className={cn(
         "inline-flex items-center justify-center rounded-lg font-medium cursor-pointer",
-        "transition-all duration-150 ease-in-out",
+        "transition-colors duration-150",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
-        "dark:focus-visible:ring-offset-surface-900",
+        "dark:focus-visible:ring-offset-surface-950",
         "disabled:opacity-50 disabled:pointer-events-none",
         variantStyles[variant],
         sizeStyles[size],

@@ -27,9 +27,9 @@ export const Checkbox = memo(function Checkbox({
         type="checkbox"
         id={id}
         className={cn(
-          "h-4 w-4 rounded border transition-colors",
-          "text-primary-600 focus:ring-primary-500 focus:ring-2",
-          "dark:bg-surface-800",
+          "h-4 w-4 rounded border transition-colors duration-150",
+          "text-primary-600 focus:outline-none focus:ring-primary-500 focus:ring-2 focus:ring-offset-1",
+          "dark:bg-surface-900 dark:focus:ring-offset-surface-950",
           hasError
             ? "border-danger-500"
             : "border-surface-300 dark:border-surface-600",

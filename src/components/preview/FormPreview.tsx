@@ -64,7 +64,7 @@ const SortableField = memo(function SortableField({
       style={style}
       onClick={isEditing ? () => onFieldSelect(field.id) : undefined}
       className={cn(
-        "group relative rounded-lg p-3 -mx-3 transition-all duration-150 border-2",
+        "group relative rounded-lg p-3 -mx-3 transition-colors duration-150 border-2",
         isDragging && "opacity-50 shadow-lg z-10",
         isEditing && "cursor-pointer",
         isEditing && isSelected

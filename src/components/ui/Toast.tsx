@@ -35,7 +35,7 @@ const Toast = memo(function Toast({ toast, onDismiss }: ToastProps) {
       role="status"
       className={cn(
         "flex items-center gap-3 rounded-lg px-4 py-3 shadow-lg border",
-        "transition-all duration-200",
+        "transition-[transform,opacity] duration-200",
         isVisible
           ? "translate-y-0 opacity-100"
           : "translate-y-2 opacity-0",

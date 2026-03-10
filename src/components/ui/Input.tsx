@@ -19,7 +19,7 @@ export const Input = memo(function Input({
         "placeholder:text-surface-500 dark:placeholder:text-surface-400",
         "transition-colors duration-150",
         "focus:outline-none focus:ring-2 focus:ring-offset-1",
-        "dark:focus:ring-offset-surface-900",
+        "dark:focus:ring-offset-surface-950",
         "disabled:opacity-50 disabled:cursor-not-allowed",
         hasError
           ? "border-danger-500 focus:ring-danger-400"
