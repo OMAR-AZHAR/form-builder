@@ -34,18 +34,36 @@ export const ToastMessages = {
     `"${fieldLabel}" has an option with an invalid label. Fix it before saving.`,
 } as const;
 
+export const Themes = {
+  Light: "light",
+  Dark: "dark",
+} as const;
+
+export type Theme = (typeof Themes)[keyof typeof Themes];
+
+export const LogicOperators = {
+  And: "and",
+  Or: "or",
+} as const;
+
 export const AppLabels = {
   appTitle: "Form Builder",
   appSubtitle: "Advanced Workflow Designer",
   switchTheme: (current: string) =>
-    `Switch to ${current === "light" ? "dark" : "light"} mode`,
+    `Switch to ${current === Themes.Light ? Themes.Dark : Themes.Light} mode`,
 } as const;
 
 export const FormLabels = {
   formNamePlaceholder: "Form name *",
   descriptionPlaceholder: "Description (optional)",
   untitledForm: "Untitled Form",
+  formNameLabel: "Form name",
+  defaultFieldLabel: "This field",
+  defaultFilename: "form",
+  checkboxFallbackLabel: "Checkbox",
   lastSaved: "Last saved:",
+  formLoaded: (name: string) => `Loaded "${name}"`,
+  formEditing: (name: string) => `Editing "${name}"`,
 } as const;
 
 export const ButtonLabels = {
@@ -112,6 +130,8 @@ export const PlaceholderTexts = {
   optionValue: "Value",
   allConditionsAnd: "All conditions (AND)",
   anyConditionOr: "Any condition (OR)",
+  joinAnd: " AND ",
+  joinOr: " OR ",
 } as const;
 
 export const EmptyStateTexts = {

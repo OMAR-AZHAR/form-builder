@@ -2,7 +2,7 @@ import { FormBuilder } from "@/components/builder/FormBuilder";
 import { ToastContainer, useToasts } from "@/components/ui";
 import { useTheme } from "@/hooks/useTheme";
 import { Logo } from "@/assets/logo";
-import { AppLabels } from "@/constants/messages";
+import { AppLabels, Themes } from "@/constants/messages";
 import { Sun, Moon } from "lucide-react";
 
 export default function App() {
@@ -30,7 +30,7 @@ export default function App() {
             className="p-2 rounded-lg text-surface-600 hover:text-surface-800 hover:bg-surface-100 dark:text-surface-400 dark:hover:text-surface-200 dark:hover:bg-surface-800 transition-colors"
             aria-label={AppLabels.switchTheme(theme)}
           >
-            {theme === "light" ? (
+            {theme === Themes.Light ? (
               <Moon className="h-5 w-5" />
             ) : (
               <Sun className="h-5 w-5" />

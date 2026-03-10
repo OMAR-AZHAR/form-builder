@@ -1,29 +1,34 @@
 import { useState, useEffect, useCallback } from "react";
-
-type Theme = "light" | "dark";
-
-const THEME_KEY = "form_builder_theme";
+import { Themes, type Theme } from "@/constants/messages";
+import { THEME_STORAGE_KEY } from "@/constants/config";
 
 function getInitialTheme(): Theme {
-  if (typeof window === "undefined") return "light";
-  const stored = localStorage.getItem(THEME_KEY);
-  if (stored === "dark" || stored === "light") return stored;
+  if (typeof window === "undefined") return Themes.Light;
+  try {
+    const stored = localStorage.getItem(THEME_STORAGE_KEY);
+    if (stored === Themes.Dark || stored === Themes.Light) return stored;
+  } catch {
+    /* private mode / storage unavailable */
+  }
   return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+    ? Themes.Dark
+    : Themes.Light;
 }
 
 export function useTheme() {
   const [theme, setThemeState] = useState<Theme>(getInitialTheme);
 
   useEffect(() => {
-    const root = document.documentElement;
-    root.classList.toggle("dark", theme === "dark");
-    localStorage.setItem(THEME_KEY, theme);
+    document.documentElement.classList.toggle(Themes.Dark, theme === Themes.Dark);
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, theme);
+    } catch {
+      /* private mode / storage unavailable */
+    }
   }, [theme]);
 
   const toggleTheme = useCallback(() => {
-    setThemeState((prev) => (prev === "light" ? "dark" : "light"));
+    setThemeState((prev) => (prev === Themes.Light ? Themes.Dark : Themes.Light));
   }, []);
 
   return { theme, toggleTheme } as const;

@@ -2,7 +2,7 @@ import { memo, useCallback } from "react";
 import type { FieldConfig, FieldValue } from "@/types";
 import { FieldTypes } from "@/types";
 import { Input, Select, Checkbox, FieldWrapper } from "@/components/ui";
-import { PlaceholderTexts } from "@/constants/messages";
+import { PlaceholderTexts, FormLabels } from "@/constants/messages";
 import { TEXT_MAX_LENGTH } from "@/constants/config";
 
 interface FieldRendererProps {
@@ -112,7 +112,7 @@ export const FieldRenderer = memo(function FieldRenderer({
         <FieldWrapper error={error}>
           <Checkbox
             id={inputId}
-            label={field.label || "Checkbox"}
+            label={field.label || FormLabels.checkboxFallbackLabel}
             checked={value === true}
             onChange={(e) => handleChange(e.target.checked)}
             hasError={!!error}

@@ -6,7 +6,7 @@ import type {
   ValidationResult,
 } from "@/types";
 import { FieldTypes, ConditionOperators, ConditionActions } from "@/types";
-import { ValidationMessages } from "@/constants/messages";
+import { ValidationMessages, FormLabels, LogicOperators } from "@/constants/messages";
 
 /**
  * Evaluates whether a single condition is satisfied.
@@ -50,7 +50,7 @@ export function isConditionMet(
     evaluateCondition(values[c.sourceFieldId], c.operator, c.value),
   );
 
-  return rule.logicOperator === "and"
+  return rule.logicOperator === LogicOperators.And
     ? results.every(Boolean)
     : results.some(Boolean);
 }
@@ -115,7 +115,7 @@ export function validateField(
   const isUncheckedBox = field.type === FieldTypes.Checkbox && value !== true;
 
   if (required && (isEmpty || isUncheckedBox)) {
-    return ValidationMessages.required(field.label || "This field");
+    return ValidationMessages.required(field.label || FormLabels.defaultFieldLabel);
   }
 
   if (isEmpty) return undefined;

@@ -15,6 +15,7 @@ import {
   CONDITION_OPERATORS,
   CONDITION_OPERATOR_LABELS,
 } from "@/types";
+import { LogicOperators } from "@/constants/messages";
 import { Button, Select, Input, FieldWrapper } from "@/components/ui";
 import {
   SectionLabels,
@@ -51,7 +52,7 @@ export const ConditionalEditor = memo(function ConditionalEditor({
     targetFieldId: "",
     action: ConditionActions.Show,
     conditions: [{ ...EMPTY_CONDITION }],
-    logicOperator: "and",
+    logicOperator: LogicOperators.And,
   });
 
   const resetDraft = useCallback(() => {
@@ -59,7 +60,7 @@ export const ConditionalEditor = memo(function ConditionalEditor({
       targetFieldId: "",
       action: ConditionActions.Show,
       conditions: [{ ...EMPTY_CONDITION }],
-      logicOperator: "and",
+      logicOperator: LogicOperators.And,
     });
     setIsAdding(false);
   }, []);
@@ -174,7 +175,7 @@ export const ConditionalEditor = memo(function ConditionalEditor({
                       );
                       return `"${src?.label || c.sourceFieldId}" ${CONDITION_OPERATOR_LABELS[c.operator]}${needsValueInput(c.operator) ? ` "${c.value}"` : ""}`;
                     })
-                    .join(rule.logicOperator === "and" ? " AND " : " OR ")}
+                    .join(rule.logicOperator === LogicOperators.And ? PlaceholderTexts.joinAnd : PlaceholderTexts.joinOr)}
                 </p>
               </div>
               <button
@@ -232,37 +233,18 @@ export const ConditionalEditor = memo(function ConditionalEditor({
             </FieldWrapper>
           </div>
 
-          {draft.conditions.length > 1 && (
-            <FieldWrapper label={FieldConfigLabels.match}>
-              <Select
-                value={draft.logicOperator}
-                onChange={(e) =>
-                  setDraft((p) => ({
-                    ...p,
-                    logicOperator: e.target.value as "and" | "or",
-                  }))
-                }
-              >
-                <option value="and">{PlaceholderTexts.allConditionsAnd}</option>
-                <option value="or">{PlaceholderTexts.anyConditionOr}</option>
-              </Select>
-            </FieldWrapper>
-          )}
-
-          {draft.conditions.map((cond, i) => {
+          {(() => {
+            const cond = draft.conditions[0];
             const sourceField = getSourceFieldForCondition(cond);
             const operators = getOperatorsForField(sourceField);
 
             return (
-              <div
-                key={i}
-                className="flex items-end gap-2 flex-wrap"
-              >
+              <div className="flex items-end gap-2 flex-wrap">
                 <FieldWrapper label={FieldConfigLabels.when} className="flex-1 min-w-[140px]">
                   <Select
                     value={cond.sourceFieldId}
                     onChange={(e) =>
-                      updateDraftCondition(i, {
+                      updateDraftCondition(0, {
                         sourceFieldId: e.target.value,
                         operator: ConditionOperators.Equals,
                         value: "",
@@ -284,7 +266,7 @@ export const ConditionalEditor = memo(function ConditionalEditor({
                   <Select
                     value={cond.operator}
                     onChange={(e) =>
-                      updateDraftCondition(i, {
+                      updateDraftCondition(0, {
                         operator: e.target.value as ConditionOperator,
                       })
                     }
@@ -303,7 +285,7 @@ export const ConditionalEditor = memo(function ConditionalEditor({
                       <Select
                         value={String(cond.value)}
                         onChange={(e) =>
-                          updateDraftCondition(i, { value: e.target.value })
+                          updateDraftCondition(0, { value: e.target.value })
                         }
                       >
                         <option value="">{PlaceholderTexts.selectValue}</option>
@@ -318,7 +300,7 @@ export const ConditionalEditor = memo(function ConditionalEditor({
                         type={sourceField?.type === FieldTypes.Number ? "number" : "text"}
                         value={String(cond.value)}
                         onChange={(e) =>
-                          updateDraftCondition(i, {
+                          updateDraftCondition(0, {
                             value:
                               sourceField?.type === FieldTypes.Number
                                 ? Number(e.target.value)
@@ -331,38 +313,9 @@ export const ConditionalEditor = memo(function ConditionalEditor({
                     )}
                   </FieldWrapper>
                 )}
-
-                {draft.conditions.length > 1 && (
-                  <button
-                    onClick={() =>
-                      setDraft((p) => ({
-                        ...p,
-                        conditions: p.conditions.filter((_, j) => j !== i),
-                      }))
-                    }
-                    className="p-2 mb-0.5 rounded text-surface-400 hover:text-danger-500"
-                    aria-label={AriaLabels.removeCondition}
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                )}
               </div>
             );
-          })}
-
-          <Button
-            variant="ghost"
-            size="sm"
-            icon={<Plus className="h-3.5 w-3.5" />}
-            onClick={() =>
-              setDraft((p) => ({
-                ...p,
-                conditions: [...p.conditions, { ...EMPTY_CONDITION }],
-              }))
-            }
-          >
-            {ButtonLabels.addCondition}
-          </Button>
+          })()}
 
           <div className="flex gap-2 pt-2 border-t border-surface-200 dark:border-surface-700">
             <Button size="sm" onClick={handleSave} disabled={!canSave}>

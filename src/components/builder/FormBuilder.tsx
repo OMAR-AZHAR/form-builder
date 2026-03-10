@@ -32,7 +32,7 @@ import type {
   ConditionalRule,
   FormConfiguration,
 } from "@/types";
-import { FIELD_TYPE_LABELS } from "@/types";
+import { FIELD_TYPE_LABELS, FieldTypes } from "@/types";
 import { FieldTypeSelector } from "./FieldTypeSelector";
 import { FieldConfigurator } from "./FieldConfigurator";
 import { ConditionalEditor } from "./ConditionalEditor";
@@ -83,7 +83,7 @@ export const FormBuilder = memo(function FormBuilder({
       return false;
     }
     if (!hasMeaningfulContent(formName)) {
-      const msg = ValidationMessages.meaningfulText("Form name");
+      const msg = ValidationMessages.meaningfulText(FormLabels.formNameLabel);
       setFormNameError(msg);
       onToast("error", msg);
       return false;
@@ -115,7 +115,7 @@ export const FormBuilder = memo(function FormBuilder({
         dispatch(selectField(f.id));
         return;
       }
-      if (f.type === "select") {
+      if (f.type === FieldTypes.Select) {
         const badOption = f.options.some(
           (o) => !o.label.trim() || !hasMeaningfulContent(o.label),
         );
@@ -153,7 +153,7 @@ export const FormBuilder = memo(function FormBuilder({
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${config.name || "form"}.json`;
+      a.download = `${config.name || FormLabels.defaultFilename}.json`;
       a.click();
       URL.revokeObjectURL(url);
       onToast("success", ToastMessages.exportSuccess);
@@ -166,7 +166,7 @@ export const FormBuilder = memo(function FormBuilder({
     (config: FormConfiguration) => {
       dispatch(loadFormConfiguration(config));
       setIsViewMode(true);
-      onToast("info", `Loaded "${config.name}"`);
+      onToast("info", FormLabels.formLoaded(config.name));
     },
     [dispatch, onToast],
   );
@@ -175,7 +175,7 @@ export const FormBuilder = memo(function FormBuilder({
     (config: FormConfiguration) => {
       dispatch(loadFormConfiguration(config));
       setIsViewMode(false);
-      onToast("info", `Editing "${config.name}"`);
+      onToast("info", FormLabels.formEditing(config.name));
     },
     [dispatch, onToast],
   );

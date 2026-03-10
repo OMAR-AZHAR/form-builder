@@ -16,6 +16,7 @@ import {
   isFormValid,
 } from "@/validation/engine";
 import type { AppThunk } from "./store";
+import { FormLabels } from "@/constants/messages";
 
 interface FormBuilderState {
   formId: string;
@@ -293,7 +294,7 @@ export const getFormConfigThunk =
       getState().formBuilder;
     return {
       id: formId,
-      name: formName || "Untitled Form",
+      name: formName || FormLabels.untitledForm,
       description: formDescription,
       fields,
       conditions,
