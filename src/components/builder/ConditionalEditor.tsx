@@ -155,7 +155,7 @@ export const ConditionalEditor = memo(function ConditionalEditor({
         return (
           <div
             key={rule.id}
-            className="rounded-lg border border-surface-200 dark:border-surface-700 p-3 space-y-2"
+            className="list-item"
           >
             <div className="flex items-start justify-between gap-2">
               <div className="text-xs text-surface-600 dark:text-surface-400 space-y-1">
@@ -183,7 +183,7 @@ export const ConditionalEditor = memo(function ConditionalEditor({
                 onClick={() => onRemove(rule.id)}
                 icon={<Trash2 className="h-3.5 w-3.5" />}
                 aria-label={AriaLabels.removeRule}
-                className="shrink-0 hover:text-danger-500 hover:bg-danger-50 dark:hover:bg-danger-500/10"
+                className="shrink-0 hover-danger"
               />
             </div>
           </div>
@@ -317,7 +317,7 @@ export const ConditionalEditor = memo(function ConditionalEditor({
             );
           })()}
 
-          <div className="flex gap-2 pt-2 border-t border-surface-200 dark:border-surface-700">
+          <div className="flex gap-2 pt-2 divider">
             <Button size="sm" onClick={handleSave} disabled={!canSave}>
               {ButtonLabels.saveRule}
             </Button>

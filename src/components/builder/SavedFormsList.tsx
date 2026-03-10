@@ -76,7 +76,7 @@ export const SavedFormsList = memo(function SavedFormsList({
       {forms.map((form) => (
         <div
           key={form.id}
-          className="rounded-lg border border-surface-200 dark:border-surface-700 p-3 space-y-2"
+          className="list-item"
         >
           <p className="text-sm font-medium text-surface-800 dark:text-surface-200 truncate">
             {form.name || FormLabels.untitledForm}

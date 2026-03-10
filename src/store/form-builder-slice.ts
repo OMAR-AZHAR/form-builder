@@ -109,6 +109,7 @@ const formBuilderSlice = createSlice({
           !c.conditions.some((fc) => fc.sourceFieldId === id),
       );
 
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- Immer draft mutation
       delete state.formValues[id];
       if (state.selectedFieldId === id) state.selectedFieldId = null;
       state.isDirty = true;

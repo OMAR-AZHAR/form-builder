@@ -91,7 +91,7 @@ export const FieldConfigurator = memo(function FieldConfigurator({
       {field.type === FieldTypes.Date && <DateValidation field={field} onUpdate={update} />}
       {field.type === FieldTypes.Select && <SelectOptions field={field} onUpdate={update} />}
 
-      <div className="pt-3 border-t border-surface-200 dark:border-surface-700 space-y-3">
+      <div className="pt-3 divider space-y-3">
         <div className="flex gap-2">
           <Button
             variant="secondary"
@@ -341,7 +341,7 @@ function SelectOptions({
             disabled={field.options.length <= 1}
             icon={<Trash2 className="h-3.5 w-3.5" />}
             aria-label={AriaLabels.removeOption}
-            className="hover:text-danger-500 hover:bg-danger-50 dark:hover:bg-danger-500/10"
+            className="hover-danger"
           />
         </div>
       ))}

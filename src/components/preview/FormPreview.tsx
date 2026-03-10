@@ -86,7 +86,7 @@ const SortableField = memo(function SortableField({
             onClick={(e) => e.stopPropagation()}
             icon={<GripVertical className="h-4 w-4" />}
             aria-label={AriaLabels.dragToReorder}
-            className="mt-2 shrink-0 cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity"
+            className="mt-2 shrink-0 cursor-grab active:cursor-grabbing hover-on-group"
           />
         )}
         <div className={cn("flex-1 min-w-0", isEditing && "pointer-events-none")}>
@@ -108,7 +108,7 @@ const SortableField = memo(function SortableField({
             }}
             icon={<X className="h-4 w-4" />}
             aria-label={AriaLabels.removeField}
-            className="mt-2 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity hover:text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-500/10 dark:hover:text-danger-400"
+            className="mt-2 shrink-0 hover-on-group hover-danger"
           />
         )}
       </div>
@@ -246,7 +246,7 @@ export const FormPreview = memo(function FormPreview({
         )}
 
         {!isEditing && visibleFields.length > 0 && (
-          <div className="mt-8 pt-6 border-t border-surface-200 dark:border-surface-700">
+          <div className="mt-8 pt-6 divider">
             <Button
               type="submit"
               size="lg"

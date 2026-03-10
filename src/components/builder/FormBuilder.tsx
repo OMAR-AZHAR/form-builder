@@ -247,10 +247,10 @@ export const FormBuilder = memo(function FormBuilder({
   return (
     <div className="flex flex-col lg:flex-row gap-6 min-h-0">
       {/* Sidebar */}
-      <aside className="w-full lg:w-64 shrink-0 space-y-6 lg:max-h-[calc(100vh-10rem)] lg:overflow-y-auto scrollbar-thin lg:pr-2">
+      <aside className="w-full lg:w-64 shrink-0 space-y-6 sidebar-scroll lg:pr-2">
         <FieldTypeSelector onSelect={handleAddField} />
 
-        <div className="border-t border-surface-200 dark:border-surface-700 pt-4">
+        <div className="divider pt-4">
           <ConditionalEditor
             fields={fields}
             conditions={conditions}
@@ -259,7 +259,7 @@ export const FormBuilder = memo(function FormBuilder({
           />
         </div>
 
-        <div className="border-t border-surface-200 dark:border-surface-700 pt-4">
+        <div className="divider pt-4">
           <SavedFormsList
             onLoad={handleLoadForm}
             onEdit={handleEditForm}
@@ -366,7 +366,7 @@ export const FormBuilder = memo(function FormBuilder({
       {/* Config panel - only in editing mode */}
       {!isViewMode && selectedField && (
         <aside className="w-full lg:w-72 shrink-0">
-          <Card className="p-4 sm:p-5 lg:max-h-[calc(100vh-10rem)] lg:overflow-y-auto scrollbar-thin">
+          <Card className="p-4 sm:p-5 sidebar-scroll">
           <FieldConfigurator
             key={selectedField.id}
             field={selectedField}
