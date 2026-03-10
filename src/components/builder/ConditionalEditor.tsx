@@ -15,7 +15,7 @@ import {
   CONDITION_OPERATORS,
   CONDITION_OPERATOR_LABELS,
 } from "@/types";
-import { Button, Select, Input, FieldWrapper } from "@/components/ui";
+import { Button, Select, Input, FieldWrapper, SectionHeader } from "@/components/ui";
 import {
   SectionLabels,
   FieldConfigLabels,
@@ -130,9 +130,7 @@ export const ConditionalEditor = memo(function ConditionalEditor({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-300">
-          {SectionLabels.conditionalRules}
-        </h3>
+        <SectionHeader>{SectionLabels.conditionalRules}</SectionHeader>
         {!isAdding && (
           <Button
             variant="ghost"
@@ -179,13 +177,14 @@ export const ConditionalEditor = memo(function ConditionalEditor({
                     .join(rule.logicOperator === LogicOperators.And ? PlaceholderTexts.joinAnd : PlaceholderTexts.joinOr)}
                 </p>
               </div>
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => onRemove(rule.id)}
-                className="p-1 rounded text-surface-400 hover:text-danger-500 hover:bg-danger-50 dark:hover:bg-danger-500/10 shrink-0"
+                icon={<Trash2 className="h-3.5 w-3.5" />}
                 aria-label={AriaLabels.removeRule}
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-              </button>
+                className="shrink-0 hover:text-danger-500 hover:bg-danger-50 dark:hover:bg-danger-500/10"
+              />
             </div>
           </div>
         );

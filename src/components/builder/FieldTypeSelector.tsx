@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { FIELD_TYPES, FIELD_TYPE_LABELS } from "@/types";
 import type { FieldType } from "@/types";
-import { Button } from "@/components/ui";
+import { Button, SectionHeader } from "@/components/ui";
 import { SectionLabels } from "@/constants/messages";
 import {
   Type,
@@ -28,9 +28,7 @@ export const FieldTypeSelector = memo(function FieldTypeSelector({
 }: FieldTypeSelectorProps) {
   return (
     <div className="space-y-2">
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-300">
-        {SectionLabels.addField}
-      </h3>
+      <SectionHeader>{SectionLabels.addField}</SectionHeader>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-1">
         {FIELD_TYPES.map((type) => (
           <Button

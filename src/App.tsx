@@ -1,5 +1,5 @@
 import { FormBuilder } from "@/components/builder/FormBuilder";
-import { ToastContainer, useToasts } from "@/components/ui";
+import { ToastContainer, useToasts, Button } from "@/components/ui";
 import { useTheme } from "@/hooks/useTheme";
 import { Logo } from "@/assets/logo";
 import { AppLabels, Themes } from "@/constants/messages";
@@ -25,17 +25,13 @@ export default function App() {
             </div>
           </div>
 
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={toggleTheme}
-            className="p-2 rounded-lg text-surface-600 hover:text-surface-800 hover:bg-surface-100 dark:text-surface-400 dark:hover:text-surface-200 dark:hover:bg-surface-800 transition-colors"
             aria-label={AppLabels.switchTheme(theme)}
-          >
-            {theme === Themes.Light ? (
-              <Moon className="h-5 w-5" />
-            ) : (
-              <Sun className="h-5 w-5" />
-            )}
-          </button>
+            icon={theme === Themes.Light ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+          />
         </div>
       </header>
 

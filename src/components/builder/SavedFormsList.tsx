@@ -2,7 +2,7 @@ import { memo, useEffect, useState } from "react";
 import type { FormConfiguration } from "@/types";
 import { formApi } from "@/api/mock-api";
 import { ToastMessages, SectionLabels, ButtonLabels, EmptyStateTexts, FormLabels } from "@/constants/messages";
-import { Button } from "@/components/ui";
+import { Button, SectionHeader } from "@/components/ui";
 import { Eye, Pencil, Trash2, Clock } from "lucide-react";
 
 interface SavedFormsListProps {
@@ -72,9 +72,7 @@ export const SavedFormsList = memo(function SavedFormsList({
 
   return (
     <div className="space-y-2">
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-300">
-        {SectionLabels.savedForms}
-      </h3>
+      <SectionHeader>{SectionLabels.savedForms}</SectionHeader>
       {forms.map((form) => (
         <div
           key={form.id}

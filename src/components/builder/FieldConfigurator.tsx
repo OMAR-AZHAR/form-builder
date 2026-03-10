@@ -1,7 +1,7 @@
 import { memo, useCallback } from "react";
 import type { FieldConfig, SelectOption } from "@/types";
 import { FieldTypes } from "@/types";
-import { Input, Checkbox, FieldWrapper, Button } from "@/components/ui";
+import { Input, Checkbox, FieldWrapper, Button, SectionHeader } from "@/components/ui";
 import {
   SectionLabels,
   FieldConfigLabels,
@@ -47,13 +47,13 @@ export const FieldConfigurator = memo(function FieldConfigurator({
         <h3 className="text-sm font-semibold text-surface-900 dark:text-surface-100">
           {SectionLabels.configureField}
         </h3>
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onClose}
-          className="p-1 rounded-md text-surface-400 hover:text-surface-600 hover:bg-surface-100 dark:hover:bg-surface-800 dark:hover:text-surface-300"
+          icon={<X className="h-4 w-4" />}
           aria-label={AriaLabels.closeConfigurator}
-        >
-          <X className="h-4 w-4" />
-        </button>
+        />
       </div>
 
       <FieldWrapper label={FieldConfigLabels.label} htmlFor="cfg-label">
@@ -140,9 +140,7 @@ function TextValidation({
 
   return (
     <div className="space-y-3 pt-2">
-      <p className="text-xs font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-300">
-        {SectionLabels.textValidation}
-      </p>
+      <SectionHeader as="p">{SectionLabels.textValidation}</SectionHeader>
       <div className="grid grid-cols-2 gap-3">
         <FieldWrapper label={FieldConfigLabels.minLength} htmlFor="cfg-minlen">
           <Input
@@ -210,9 +208,7 @@ function NumberValidation({
 
   return (
     <div className="space-y-3 pt-2">
-      <p className="text-xs font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-300">
-        {SectionLabels.numberValidation}
-      </p>
+      <SectionHeader as="p">{SectionLabels.numberValidation}</SectionHeader>
       <div className="grid grid-cols-2 gap-3">
         <FieldWrapper label={FieldConfigLabels.minValue} htmlFor="cfg-min">
           <Input
@@ -258,9 +254,7 @@ function DateValidation({
 
   return (
     <div className="space-y-3 pt-2">
-      <p className="text-xs font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-300">
-        {SectionLabels.dateValidation}
-      </p>
+      <SectionHeader as="p">{SectionLabels.dateValidation}</SectionHeader>
       <div className="grid grid-cols-2 gap-3">
         <FieldWrapper label={FieldConfigLabels.earliestDate} htmlFor="cfg-mindate">
           <Input
@@ -321,9 +315,7 @@ function SelectOptions({
 
   return (
     <div className="space-y-3 pt-2">
-      <p className="text-xs font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-300">
-        {SectionLabels.options}
-      </p>
+      <SectionHeader as="p">{SectionLabels.options}</SectionHeader>
       {field.options.map((opt, i) => (
         <div key={opt.value || i} className="flex items-center gap-2">
           <Input
@@ -342,14 +334,15 @@ function SelectOptions({
             maxLength={TEXT_MAX_LENGTH}
             className="flex-1"
           />
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => removeOption(i)}
             disabled={field.options.length <= 1}
-            className="p-1.5 rounded-md text-surface-400 hover:text-danger-500 hover:bg-danger-50 disabled:opacity-30 disabled:pointer-events-none dark:hover:bg-danger-500/10"
+            icon={<Trash2 className="h-3.5 w-3.5" />}
             aria-label={AriaLabels.removeOption}
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </button>
+            className="hover:text-danger-500 hover:bg-danger-50 dark:hover:bg-danger-500/10"
+          />
         </div>
       ))}
       <Button

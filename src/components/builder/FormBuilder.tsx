@@ -42,13 +42,8 @@ import { FieldConfigurator } from "./FieldConfigurator";
 import { ConditionalEditor } from "./ConditionalEditor";
 import { SavedFormsList } from "./SavedFormsList";
 import { FormPreview } from "@/components/preview/FormPreview";
-import { Input, Button, FieldWrapper } from "@/components/ui";
-import {
-  Save,
-  Download,
-  FilePlus,
-  AlertCircle,
-} from "lucide-react";
+import { Input, Button, FieldWrapper, Card, ErrorBanner } from "@/components/ui";
+import { Save, Download, FilePlus } from "lucide-react";
 
 interface FormBuilderProps {
   onToast: (type: "success" | "error" | "info", message: string) => void;
@@ -336,16 +331,9 @@ export const FormBuilder = memo(function FormBuilder({
         </div>
 
         {saveError && (
-          <div className="flex items-center gap-2 rounded-lg border border-danger-300 dark:border-danger-700 bg-danger-50 dark:bg-danger-500/10 px-4 py-3 text-sm text-danger-700 dark:text-danger-400">
-            <AlertCircle className="h-4 w-4 shrink-0" />
-            <p>{saveError}</p>
-            <button
-              onClick={() => dispatch(setSaveError(null))}
-              className="ml-auto text-danger-600 hover:text-danger-800 dark:text-danger-400 dark:hover:text-danger-300 text-xs font-medium"
-            >
-              {ButtonLabels.dismiss}
-            </button>
-          </div>
+          <ErrorBanner onDismiss={() => dispatch(setSaveError(null))}>
+            {saveError}
+          </ErrorBanner>
         )}
 
         <FormPreview
@@ -377,7 +365,8 @@ export const FormBuilder = memo(function FormBuilder({
 
       {/* Config panel - only in editing mode */}
       {!isViewMode && selectedField && (
-        <aside className="w-full lg:w-72 shrink-0 rounded-xl border border-surface-200/60 dark:border-surface-700 bg-white/70 dark:bg-surface-800/30 backdrop-blur-lg p-4 sm:p-5 lg:max-h-[calc(100vh-10rem)] lg:overflow-y-auto scrollbar-thin">
+        <aside className="w-full lg:w-72 shrink-0">
+          <Card className="p-4 sm:p-5 lg:max-h-[calc(100vh-10rem)] lg:overflow-y-auto scrollbar-thin">
           <FieldConfigurator
             key={selectedField.id}
             field={selectedField}
@@ -389,6 +378,7 @@ export const FormBuilder = memo(function FormBuilder({
             onMoveDown={handleMoveDown}
             onClose={() => handleSelectField(null)}
           />
+          </Card>
         </aside>
       )}
     </div>

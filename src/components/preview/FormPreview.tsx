@@ -18,7 +18,7 @@ import { CSS } from "@dnd-kit/utilities";
 import type { FieldConfig, FieldValue, FormValues, ConditionalRule, ValidationResult } from "@/types";
 import { FieldRenderer } from "@/components/fields/FieldRenderer";
 import { isFieldVisible, isFieldRequired } from "@/validation/engine";
-import { Button } from "@/components/ui";
+import { Button, Card } from "@/components/ui";
 import { cn } from "@/utils/cn";
 import { FormLabels, ButtonLabels, EmptyStateTexts, AriaLabels } from "@/constants/messages";
 import { Send, LayoutList, GripVertical, X } from "lucide-react";
@@ -77,15 +77,17 @@ const SortableField = memo(function SortableField({
     >
       <div className={cn("flex gap-2", isEditing && "items-start")}>
         {isEditing && (
-          <button
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
             {...attributes}
             {...listeners}
             onClick={(e) => e.stopPropagation()}
-            className="mt-2 shrink-0 cursor-grab active:cursor-grabbing text-surface-400 hover:text-surface-600 dark:hover:text-surface-300 opacity-0 group-hover:opacity-100 transition-opacity"
+            icon={<GripVertical className="h-4 w-4" />}
             aria-label={AriaLabels.dragToReorder}
-          >
-            <GripVertical className="h-4 w-4" />
-          </button>
+            className="mt-2 shrink-0 cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity"
+          />
         )}
         <div className={cn("flex-1 min-w-0", isEditing && "pointer-events-none")}>
           <FieldRenderer
@@ -97,16 +99,17 @@ const SortableField = memo(function SortableField({
           />
         </div>
         {isEditing && (
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={(e) => {
               e.stopPropagation();
               onRemove(field.id);
             }}
-            className="mt-2 shrink-0 p-1 rounded-md cursor-pointer text-surface-400 hover:text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-500/10 dark:hover:text-danger-400 opacity-0 group-hover:opacity-100 transition-opacity"
+            icon={<X className="h-4 w-4" />}
             aria-label={AriaLabels.removeField}
-          >
-            <X className="h-4 w-4" />
-          </button>
+            className="mt-2 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity hover:text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-500/10 dark:hover:text-danger-400"
+          />
         )}
       </div>
     </div>
@@ -175,7 +178,7 @@ export const FormPreview = memo(function FormPreview({
 
   if (fields.length === 0) {
     return (
-      <div className="rounded-xl border border-surface-200/60 dark:border-surface-700 bg-white/70 dark:bg-surface-800/50 backdrop-blur-lg p-6 sm:p-8">
+      <Card className="p-6 sm:p-8">
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <LayoutList className="h-12 w-12 text-surface-400 dark:text-surface-600 mb-3" />
           <p className="text-sm font-medium text-surface-600 dark:text-surface-300">
@@ -185,12 +188,12 @@ export const FormPreview = memo(function FormPreview({
             {EmptyStateTexts.noFieldsDescription}
           </p>
         </div>
-      </div>
+      </Card>
     );
   }
 
   return (
-    <div className="rounded-xl border border-surface-200/60 dark:border-surface-700 bg-white/70 dark:bg-surface-800/50 backdrop-blur-lg p-6 sm:p-8">
+    <Card className="p-6 sm:p-8">
       <div className="mb-8">
         <h2 className="text-xl font-bold text-surface-900 dark:text-surface-100">
           {formName || FormLabels.untitledForm}
@@ -254,6 +257,6 @@ export const FormPreview = memo(function FormPreview({
           </div>
         )}
       </form>
-    </div>
+    </Card>
   );
 });
