@@ -1,9 +1,7 @@
 export type {
   FieldType,
   FieldConfig,
-  FieldConfigMap,
   FieldValue,
-  FieldValueMap,
   TextFieldConfig,
   NumberFieldConfig,
   SelectFieldConfig,
@@ -30,6 +28,6 @@ export {
   CONDITION_ACTION_LABELS,
 } from "./condition";
 
-export type { ValidationError, ValidationResult } from "./validation";
+export type { ValidationResult } from "./validation";
 
 export type { FormValues, FormConfiguration } from "./form";
