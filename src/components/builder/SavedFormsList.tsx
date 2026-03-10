@@ -3,7 +3,7 @@ import type { FormConfiguration } from "@/types";
 import { formApi } from "@/api/mock-api";
 import { ToastMessages, SectionLabels, ButtonLabels, EmptyStateTexts, FormLabels } from "@/constants/messages";
 import { Button } from "@/components/ui";
-import { FolderOpen, Pencil, Trash2, Clock } from "lucide-react";
+import { Eye, Pencil, Trash2, Clock } from "lucide-react";
 
 interface SavedFormsListProps {
   onLoad: (config: FormConfiguration) => void;
@@ -93,10 +93,10 @@ export const SavedFormsList = memo(function SavedFormsList({
             <Button
               variant="secondary"
               size="sm"
-              icon={<FolderOpen className="h-3 w-3" />}
+              icon={<Eye className="h-3 w-3" />}
               onClick={() => onLoad(form)}
             >
-              {ButtonLabels.load}
+              {ButtonLabels.preview}
             </Button>
             <Button
               variant="secondary"

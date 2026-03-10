@@ -62,7 +62,7 @@ export const ButtonLabels = {
   removeField: "Remove Field",
   moveUp: "Move Up",
   moveDown: "Move Down",
-  load: "Load",
+  preview: "Preview",
   edit: "Edit",
   delete: "Delete",
 } as const;

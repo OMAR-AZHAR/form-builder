@@ -180,14 +180,21 @@ export const FormBuilder = memo(function FormBuilder({
     [dispatch, onToast],
   );
 
-  const handlePreviewSubmit = useCallback(() => {
+  const handlePreviewSubmit = useCallback(async () => {
     const isValid = dispatch(validateFormThunk());
-    if (isValid) {
-      onToast("success", ToastMessages.submitSuccess);
-    } else {
+    if (!isValid) {
       onToast("error", ToastMessages.submitInvalid);
+      return;
     }
-  }, [dispatch, onToast]);
+
+    try {
+      const config = dispatch(getFormConfigThunk());
+      await formApi.submitForm(config.id, formValues);
+      onToast("success", ToastMessages.submitSuccess);
+    } catch {
+      onToast("error", ToastMessages.saveFailed);
+    }
+  }, [dispatch, formValues, onToast]);
 
   const handleFieldChange = useCallback(
     (fieldId: string, value: FieldValue) =>

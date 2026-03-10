@@ -1,4 +1,4 @@
-import type { FormConfiguration } from "@/types";
+import type { FormConfiguration, FormValues } from "@/types";
 
 const STORAGE_KEY = import.meta.env.VITE_STORAGE_KEY ?? "form_builder_configurations";
 const API_DELAY = Number(import.meta.env.VITE_API_SIMULATED_DELAY ?? 600);
@@ -64,5 +64,14 @@ export const formApi = {
   async exportAsJson(config: FormConfiguration): Promise<string> {
     await delay(200);
     return JSON.stringify(config, null, 2);
+  },
+
+  async submitForm(
+    formId: string,
+    values: FormValues,
+  ): Promise<{ success: boolean; submittedAt: string }> {
+    await delay();
+    console.log("[Mock API] Form submitted:", { formId, values });
+    return { success: true, submittedAt: new Date().toISOString() };
   },
 };
