@@ -1,5 +1,6 @@
-import { memo, useEffect, useState, useCallback } from "react";
+import { memo, useEffect, useState } from "react";
 import { cn } from "@/utils/cn";
+import { TOAST_DURATION_MS, TOAST_EXIT_DELAY_MS } from "@/constants/config";
 import { CheckCircle, AlertCircle, X } from "lucide-react";
 
 export interface ToastMessage {
@@ -18,11 +19,15 @@ const Toast = memo(function Toast({ toast, onDismiss }: ToastProps) {
 
   useEffect(() => {
     requestAnimationFrame(() => setIsVisible(true));
+    let exitTimer: ReturnType<typeof setTimeout>;
     const timer = setTimeout(() => {
       setIsVisible(false);
-      setTimeout(() => onDismiss(toast.id), 200);
-    }, 4000);
-    return () => clearTimeout(timer);
+      exitTimer = setTimeout(() => onDismiss(toast.id), TOAST_EXIT_DELAY_MS);
+    }, TOAST_DURATION_MS);
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(exitTimer);
+    };
   }, [toast.id, onDismiss]);
 
   return (
@@ -69,22 +74,4 @@ export function ToastContainer({ toasts, onDismiss }: ToastContainerProps) {
       ))}
     </div>
   );
-}
-
-export function useToasts() {
-  const [toasts, setToasts] = useState<ToastMessage[]>([]);
-
-  const addToast = useCallback(
-    (type: ToastMessage["type"], message: string) => {
-      const id = crypto.randomUUID();
-      setToasts((prev) => [...prev, { id, type, message }]);
-    },
-    [],
-  );
-
-  const dismissToast = useCallback((id: string) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
-  }, []);
-
-  return { toasts, addToast, dismissToast };
 }

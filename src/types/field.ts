@@ -87,27 +87,4 @@ export type FieldConfig =
   | CheckboxFieldConfig
   | DateFieldConfig;
 
-/**
- * Maps each field type to its corresponding configuration interface,
- * enabling type-safe field creation and updates.
- */
-export interface FieldConfigMap {
-  text: TextFieldConfig;
-  number: NumberFieldConfig;
-  select: SelectFieldConfig;
-  checkbox: CheckboxFieldConfig;
-  date: DateFieldConfig;
-}
-
-/**
- * Maps each field type to the runtime value it produces.
- */
-export interface FieldValueMap {
-  text: string;
-  number: number;
-  select: string;
-  checkbox: boolean;
-  date: string;
-}
-
 export type FieldValue = string | number | boolean | undefined;

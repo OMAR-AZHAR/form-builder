@@ -17,7 +17,11 @@ function getStore(): FormConfiguration[] {
 }
 
 function persist(configs: FormConfiguration[]): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(configs));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(configs));
+  } catch {
+    /* quota exceeded or private mode */
+  }
 }
 
 /**

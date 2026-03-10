@@ -1,30 +1,22 @@
-import {
-  type SelectHTMLAttributes,
-  type Ref,
-  type ReactNode,
-  memo,
-} from "react";
+import { type SelectHTMLAttributes, type ReactNode, memo } from "react";
 import { cn } from "@/utils/cn";
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   hasError?: boolean;
   children: ReactNode;
-  ref?: Ref<HTMLSelectElement>;
 }
 
 export const Select = memo(function Select({
   hasError,
   className,
   children,
-  ref,
   ...rest
 }: SelectProps) {
   return (
     <select
-      ref={ref}
       className={cn(
         "w-full rounded-lg border px-3 py-2 text-sm appearance-none",
-        "bg-white dark:bg-surface-900",
+        "bg-white/80 dark:bg-surface-900",
         "text-surface-900 dark:text-surface-100",
         "placeholder:text-surface-500 dark:placeholder:text-surface-400",
         "transition-colors duration-150",

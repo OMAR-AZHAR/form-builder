@@ -2,7 +2,7 @@ import { memo, useCallback, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   addField,
-  removeField,
+  removeFieldThunk,
   updateField,
   reorderFields,
   moveField,
@@ -22,9 +22,13 @@ import {
   getFormConfigThunk,
 } from "@/store/form-builder-slice";
 import { formApi } from "@/api/mock-api";
-import { ToastMessages, ValidationMessages, FormLabels, ButtonLabels } from "@/constants/messages";
+import { ToastMessages, FormLabels, ButtonLabels } from "@/constants/messages";
 import { TEXT_MAX_LENGTH } from "@/constants/config";
-import { hasMeaningfulContent } from "@/utils/sanitize";
+import {
+  downloadJson,
+  validateFormName as checkFormName,
+  validateFieldLabels,
+} from "@/utils/form-actions";
 import type {
   FieldType,
   FieldValue,
@@ -32,7 +36,7 @@ import type {
   ConditionalRule,
   FormConfiguration,
 } from "@/types";
-import { FIELD_TYPE_LABELS, FieldTypes } from "@/types";
+import { FIELD_TYPE_LABELS } from "@/types";
 import { FieldTypeSelector } from "./FieldTypeSelector";
 import { FieldConfigurator } from "./FieldConfigurator";
 import { ConditionalEditor } from "./ConditionalEditor";
@@ -76,16 +80,11 @@ export const FormBuilder = memo(function FormBuilder({
     ? fields.findIndex((f) => f.id === selectedField.id)
     : -1;
 
-  const validateFormName = useCallback((): boolean => {
-    if (!formName.trim()) {
-      setFormNameError(ToastMessages.formNameRequired);
-      onToast("error", ToastMessages.formNameRequired);
-      return false;
-    }
-    if (!hasMeaningfulContent(formName)) {
-      const msg = ValidationMessages.meaningfulText(FormLabels.formNameLabel);
-      setFormNameError(msg);
-      onToast("error", msg);
+  const validateName = useCallback((): boolean => {
+    const error = checkFormName(formName);
+    if (error) {
+      setFormNameError(error);
+      onToast("error", error);
       return false;
     }
     setFormNameError(null);
@@ -94,37 +93,26 @@ export const FormBuilder = memo(function FormBuilder({
 
   const handleAddField = useCallback(
     (type: FieldType) => {
-      if (!validateFormName()) return;
+      if (!validateName()) return;
       dispatch(addField(type));
       setIsViewMode(false);
+      onToast("success", ToastMessages.fieldAdded(FIELD_TYPE_LABELS[type]));
     },
-    [dispatch, validateFormName],
+    [dispatch, validateName, onToast],
   );
 
   const handleSave = useCallback(async () => {
-    if (!validateFormName()) return;
+    if (!validateName()) return;
     if (fields.length === 0) {
       onToast("error", ToastMessages.noFields);
       return;
     }
 
-    for (let i = 0; i < fields.length; i++) {
-      const f = fields[i];
-      if (!f.label.trim() || !hasMeaningfulContent(f.label)) {
-        onToast("error", ToastMessages.fieldLabelInvalid(i + 1, FIELD_TYPE_LABELS[f.type]));
-        dispatch(selectField(f.id));
-        return;
-      }
-      if (f.type === FieldTypes.Select) {
-        const badOption = f.options.some(
-          (o) => !o.label.trim() || !hasMeaningfulContent(o.label),
-        );
-        if (badOption) {
-          onToast("error", ToastMessages.optionLabelInvalid(f.label));
-          dispatch(selectField(f.id));
-          return;
-        }
-      }
+    const labelError = validateFieldLabels(fields);
+    if (labelError) {
+      onToast("error", labelError.message);
+      dispatch(selectField(labelError.fieldId));
+      return;
     }
 
     dispatch(setSaving(true));
@@ -143,19 +131,13 @@ export const FormBuilder = memo(function FormBuilder({
     } finally {
       dispatch(setSaving(false));
     }
-  }, [dispatch, fields, validateFormName, onToast]);
+  }, [dispatch, fields, validateName, onToast]);
 
   const handleExport = useCallback(async () => {
     try {
       const config = dispatch(getFormConfigThunk());
       const json = await formApi.exportAsJson(config);
-      const blob = new Blob([json], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${config.name || FormLabels.defaultFilename}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
+      downloadJson(json, `${config.name || FormLabels.defaultFilename}.json`);
       onToast("success", ToastMessages.exportSuccess);
     } catch {
       onToast("error", ToastMessages.exportFailed);
@@ -166,6 +148,7 @@ export const FormBuilder = memo(function FormBuilder({
     (config: FormConfiguration) => {
       dispatch(loadFormConfiguration(config));
       setIsViewMode(true);
+      setFormNameError(null);
       onToast("info", FormLabels.formLoaded(config.name));
     },
     [dispatch, onToast],
@@ -175,6 +158,7 @@ export const FormBuilder = memo(function FormBuilder({
     (config: FormConfiguration) => {
       dispatch(loadFormConfiguration(config));
       setIsViewMode(false);
+      setFormNameError(null);
       onToast("info", FormLabels.formEditing(config.name));
     },
     [dispatch, onToast],
@@ -203,13 +187,19 @@ export const FormBuilder = memo(function FormBuilder({
   );
 
   const handleAddCondition = useCallback(
-    (rule: Omit<ConditionalRule, "id">) => dispatch(addCondition(rule)),
-    [dispatch],
+    (rule: Omit<ConditionalRule, "id">) => {
+      dispatch(addCondition(rule));
+      onToast("success", ToastMessages.ruleAdded);
+    },
+    [dispatch, onToast],
   );
 
   const handleRemoveCondition = useCallback(
-    (ruleId: string) => dispatch(removeCondition(ruleId)),
-    [dispatch],
+    (ruleId: string) => {
+      dispatch(removeCondition(ruleId));
+      onToast("info", ToastMessages.ruleRemoved);
+    },
+    [dispatch, onToast],
   );
 
   const handleSelectField = useCallback(
@@ -218,8 +208,15 @@ export const FormBuilder = memo(function FormBuilder({
   );
 
   const handleRemoveField = useCallback(
-    (id: string) => dispatch(removeField(id)),
-    [dispatch],
+    (id: string) => {
+      const removed = dispatch(removeFieldThunk(id));
+      if (removed) {
+        onToast("success", ToastMessages.fieldRemoved);
+      } else {
+        onToast("error", ToastMessages.fieldRemoveBlocked);
+      }
+    },
+    [dispatch, onToast],
   );
 
   const handleUpdateField = useCallback(
@@ -229,19 +226,27 @@ export const FormBuilder = memo(function FormBuilder({
   );
 
   const handleReorderFields = useCallback(
-    (activeId: string, overId: string) =>
-      dispatch(reorderFields({ activeId, overId })),
-    [dispatch],
+    (activeId: string, overId: string) => {
+      dispatch(reorderFields({ activeId, overId }));
+      onToast("info", ToastMessages.fieldMoved);
+    },
+    [dispatch, onToast],
   );
 
   const handleMoveUp = useCallback(
-    (id: string) => dispatch(moveField({ id, direction: "up" })),
-    [dispatch],
+    (id: string) => {
+      dispatch(moveField({ id, direction: "up" }));
+      onToast("info", ToastMessages.fieldMoved);
+    },
+    [dispatch, onToast],
   );
 
   const handleMoveDown = useCallback(
-    (id: string) => dispatch(moveField({ id, direction: "down" })),
-    [dispatch],
+    (id: string) => {
+      dispatch(moveField({ id, direction: "down" }));
+      onToast("info", ToastMessages.fieldMoved);
+    },
+    [dispatch, onToast],
   );
 
   return (
@@ -274,7 +279,7 @@ export const FormBuilder = memo(function FormBuilder({
         <div className="flex flex-col sm:flex-row gap-3 sm:items-start">
           <FieldWrapper error={formNameError ?? undefined} className="sm:flex-1">
             <Input
-              value={formName?.toString().trimStart()}
+              value={formName.trimStart()}
               onChange={(e) => {
                 dispatch(setFormName(e.target.value));
                 if (formNameError && e.target.value.trim()) setFormNameError(null);
@@ -322,6 +327,8 @@ export const FormBuilder = memo(function FormBuilder({
             onClick={() => {
               dispatch(resetForm());
               setIsViewMode(false);
+              setFormNameError(null);
+              onToast("info", ToastMessages.formReset);
             }}
           >
             {ButtonLabels.newForm}
@@ -352,6 +359,7 @@ export const FormBuilder = memo(function FormBuilder({
           isEditing={!isViewMode}
           onFieldChange={handleFieldChange}
           onFieldSelect={handleSelectField}
+          onRemove={handleRemoveField}
           onReorder={handleReorderFields}
           onSubmit={handlePreviewSubmit}
         />
@@ -367,9 +375,9 @@ export const FormBuilder = memo(function FormBuilder({
         )}
       </main>
 
-      {/* Config panel — only in editing mode */}
+      {/* Config panel - only in editing mode */}
       {!isViewMode && selectedField && (
-        <aside className="w-full lg:w-72 shrink-0 rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-800/30 p-4 sm:p-5 lg:max-h-[calc(100vh-10rem)] lg:overflow-y-auto scrollbar-thin">
+        <aside className="w-full lg:w-72 shrink-0 rounded-xl border border-surface-200/60 dark:border-surface-700 bg-white/70 dark:bg-surface-800/30 backdrop-blur-lg p-4 sm:p-5 lg:max-h-[calc(100vh-10rem)] lg:overflow-y-auto scrollbar-thin">
           <FieldConfigurator
             key={selectedField.id}
             field={selectedField}

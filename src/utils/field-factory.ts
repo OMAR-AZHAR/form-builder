@@ -8,8 +8,8 @@ import { FieldTypes, FIELD_TYPE_LABELS } from "@/types";
  */
 export function createField(type: FieldType, order: number): FieldConfig {
   const base = {
-    id: nanoid(100),
-    label: FIELD_TYPE_LABELS[type],
+    id: nanoid(10),
+    label: FIELD_TYPE_LABELS[type] + " " + (order + 1),
     placeholder: "",
     required: false,
     order,
@@ -31,5 +31,9 @@ export function createField(type: FieldType, order: number): FieldConfig {
       return { ...base, type: FieldTypes.Checkbox, defaultValue: false };
     case FieldTypes.Date:
       return { ...base, type: FieldTypes.Date, defaultValue: "" };
+    default: {
+      const _exhaustive: never = type;
+      throw new Error(`Unknown field type: ${_exhaustive}`);
+    }
   }
 }

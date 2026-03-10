@@ -1,27 +1,20 @@
-import {
-  type InputHTMLAttributes,
-  type Ref,
-  memo,
-} from "react";
+import { type InputHTMLAttributes, memo } from "react";
 import { cn } from "@/utils/cn";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   hasError?: boolean;
-  ref?: Ref<HTMLInputElement>;
 }
 
 export const Input = memo(function Input({
   hasError,
   className,
-  ref,
   ...rest
 }: InputProps) {
   return (
     <input
-      ref={ref}
       className={cn(
         "w-full rounded-lg border px-3 py-2 text-sm",
-        "bg-white dark:bg-surface-900",
+        "bg-white/80 dark:bg-surface-900",
         "text-surface-900 dark:text-surface-100",
         "placeholder:text-surface-500 dark:placeholder:text-surface-400",
         "transition-colors duration-150",

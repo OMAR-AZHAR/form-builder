@@ -21,7 +21,7 @@ import { isFieldVisible, isFieldRequired } from "@/validation/engine";
 import { Button } from "@/components/ui";
 import { cn } from "@/utils/cn";
 import { FormLabels, ButtonLabels, EmptyStateTexts, AriaLabels } from "@/constants/messages";
-import { Send, LayoutList, GripVertical } from "lucide-react";
+import { Send, LayoutList, GripVertical, X } from "lucide-react";
 
 interface SortableFieldProps {
   field: FieldConfig;
@@ -31,6 +31,7 @@ interface SortableFieldProps {
   error: string | undefined;
   onFieldChange: (fieldId: string, value: FieldValue) => void;
   onFieldSelect: (fieldId: string) => void;
+  onRemove: (fieldId: string) => void;
 }
 
 const SortableField = memo(function SortableField({
@@ -41,6 +42,7 @@ const SortableField = memo(function SortableField({
   error,
   onFieldChange,
   onFieldSelect,
+  onRemove,
 }: SortableFieldProps) {
   const {
     attributes,
@@ -73,25 +75,39 @@ const SortableField = memo(function SortableField({
           "hover:border-surface-300 hover:bg-surface-50 dark:hover:border-surface-600 dark:hover:bg-surface-800/50",
       )}
     >
-      {isEditing && (
-        <button
-          {...attributes}
-          {...listeners}
-          onClick={(e) => e.stopPropagation()}
-          className="absolute -left-1 top-1/2 -translate-y-1/2 p-1 cursor-grab active:cursor-grabbing text-surface-400 hover:text-surface-600 dark:hover:text-surface-300 opacity-0 group-hover:opacity-100 transition-opacity"
-          aria-label={AriaLabels.dragToReorder}
-        >
-          <GripVertical className="h-4 w-4" />
-        </button>
-      )}
-      <div className={cn(isEditing && "pointer-events-none")}>
-        <FieldRenderer
-          field={field}
-          value={value}
-          error={error}
-          onChange={onFieldChange}
-          disabled={isEditing}
-        />
+      <div className={cn("flex gap-2", isEditing && "items-start")}>
+        {isEditing && (
+          <button
+            {...attributes}
+            {...listeners}
+            onClick={(e) => e.stopPropagation()}
+            className="mt-2 shrink-0 cursor-grab active:cursor-grabbing text-surface-400 hover:text-surface-600 dark:hover:text-surface-300 opacity-0 group-hover:opacity-100 transition-opacity"
+            aria-label={AriaLabels.dragToReorder}
+          >
+            <GripVertical className="h-4 w-4" />
+          </button>
+        )}
+        <div className={cn("flex-1 min-w-0", isEditing && "pointer-events-none")}>
+          <FieldRenderer
+            field={field}
+            value={value}
+            error={error}
+            onChange={onFieldChange}
+            disabled={isEditing}
+          />
+        </div>
+        {isEditing && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove(field.id);
+            }}
+            className="mt-2 shrink-0 p-1 rounded-md cursor-pointer text-surface-400 hover:text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-500/10 dark:hover:text-danger-400 opacity-0 group-hover:opacity-100 transition-opacity"
+            aria-label={AriaLabels.removeField}
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
       </div>
     </div>
   );
@@ -108,6 +124,7 @@ interface FormPreviewProps {
   isEditing: boolean;
   onFieldChange: (fieldId: string, value: FieldValue) => void;
   onFieldSelect: (fieldId: string) => void;
+  onRemove: (fieldId: string) => void;
   onReorder: (activeId: string, overId: string) => void;
   onSubmit: () => void;
 }
@@ -123,6 +140,7 @@ export const FormPreview = memo(function FormPreview({
   isEditing,
   onFieldChange,
   onFieldSelect,
+  onRemove,
   onReorder,
   onSubmit,
 }: FormPreviewProps) {
@@ -157,7 +175,7 @@ export const FormPreview = memo(function FormPreview({
 
   if (fields.length === 0) {
     return (
-      <div className="rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-800/50 p-6 sm:p-8">
+      <div className="rounded-xl border border-surface-200/60 dark:border-surface-700 bg-white/70 dark:bg-surface-800/50 backdrop-blur-lg p-6 sm:p-8">
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <LayoutList className="h-12 w-12 text-surface-400 dark:text-surface-600 mb-3" />
           <p className="text-sm font-medium text-surface-600 dark:text-surface-300">
@@ -172,7 +190,7 @@ export const FormPreview = memo(function FormPreview({
   }
 
   return (
-    <div className="rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-800/50 p-6 sm:p-8">
+    <div className="rounded-xl border border-surface-200/60 dark:border-surface-700 bg-white/70 dark:bg-surface-800/50 backdrop-blur-lg p-6 sm:p-8">
       <div className="mb-8">
         <h2 className="text-xl font-bold text-surface-900 dark:text-surface-100">
           {formName || FormLabels.untitledForm}
@@ -210,6 +228,7 @@ export const FormPreview = memo(function FormPreview({
                     error={validationErrors[field.id]}
                     onFieldChange={onFieldChange}
                     onFieldSelect={onFieldSelect}
+                    onRemove={onRemove}
                   />
                 );
               })}

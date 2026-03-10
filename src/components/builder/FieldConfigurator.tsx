@@ -10,6 +10,7 @@ import {
   AriaLabels,
 } from "@/constants/messages";
 import { TEXT_MAX_LENGTH } from "@/constants/config";
+import { isValidLabel } from "@/utils/sanitize";
 import { Trash2, Plus, X, ArrowUp, ArrowDown } from "lucide-react";
 
 interface FieldConfiguratorProps {
@@ -58,9 +59,10 @@ export const FieldConfigurator = memo(function FieldConfigurator({
       <FieldWrapper label={FieldConfigLabels.label} htmlFor="cfg-label">
         <Input
           id="cfg-label"
-          value={field.label?.toString().trimStart()}
+          value={field.label.trimStart()}
           onChange={(e) => update({ label: e.target.value })}
           placeholder={PlaceholderTexts.enterFieldLabel}
+          hasError={field.label.trim().length > 0 && !isValidLabel(field.label)}
           maxLength={TEXT_MAX_LENGTH}
         />
       </FieldWrapper>
@@ -323,18 +325,20 @@ function SelectOptions({
         {SectionLabels.options}
       </p>
       {field.options.map((opt, i) => (
-        <div key={i} className="flex items-center gap-2">
+        <div key={opt.value || i} className="flex items-center gap-2">
           <Input
-            value={opt.label?.toString().trimStart()}
+            value={opt.label.trimStart()}
             onChange={(e) => updateOption(i, { label: e.target.value })}
             placeholder={PlaceholderTexts.optionLabel}
+            hasError={!isValidLabel(opt.label)}
             maxLength={TEXT_MAX_LENGTH}
             className="flex-1"
           />
           <Input
-            value={opt.value?.toString().trimStart()}
+            value={opt.value.trimStart()}
             onChange={(e) => updateOption(i, { value: e.target.value })}
             placeholder={PlaceholderTexts.optionValue}
+            hasError={!opt.value.trim()}
             maxLength={TEXT_MAX_LENGTH}
             className="flex-1"
           />

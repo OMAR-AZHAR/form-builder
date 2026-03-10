@@ -15,7 +15,6 @@ import {
   CONDITION_OPERATORS,
   CONDITION_OPERATOR_LABELS,
 } from "@/types";
-import { LogicOperators } from "@/constants/messages";
 import { Button, Select, Input, FieldWrapper } from "@/components/ui";
 import {
   SectionLabels,
@@ -24,6 +23,8 @@ import {
   ButtonLabels,
   EmptyStateTexts,
   AriaLabels,
+  FormLabels,
+  LogicOperators,
 } from "@/constants/messages";
 import { TEXT_MAX_LENGTH } from "@/constants/config";
 import { Plus, Trash2, GitBranch } from "lucide-react";
@@ -167,7 +168,7 @@ export const ConditionalEditor = memo(function ConditionalEditor({
                   &ldquo;{target?.label || rule.targetFieldId}&rdquo;
                 </p>
                 <p className="text-surface-500 dark:text-surface-400">
-                  when{" "}
+                  {FormLabels.whenPrefix}
                   {rule.conditions
                     .map((c) => {
                       const src = fields.find(
@@ -226,7 +227,7 @@ export const ConditionalEditor = memo(function ConditionalEditor({
                 <option value="">{PlaceholderTexts.selectField}</option>
                 {fields.map((f) => (
                   <option key={f.id} value={f.id}>
-                    {f.label || `Untitled (${f.type})`}
+                    {f.label || FormLabels.untitledField(f.type)}
                   </option>
                 ))}
               </Select>
@@ -256,7 +257,7 @@ export const ConditionalEditor = memo(function ConditionalEditor({
                       .filter((f) => f.id !== draft.targetFieldId)
                       .map((f) => (
                         <option key={f.id} value={f.id}>
-                          {f.label || `Untitled (${f.type})`}
+                          {f.label || FormLabels.untitledField(f.type)}
                         </option>
                       ))}
                   </Select>

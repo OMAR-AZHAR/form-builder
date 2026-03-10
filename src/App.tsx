@@ -10,8 +10,8 @@ export default function App() {
   const { toasts, addToast, dismissToast } = useToasts();
 
   return (
-    <div className="min-h-screen bg-surface-50 dark:bg-surface-950 transition-colors duration-300">
-      <header className="sticky top-0 z-40 border-b border-surface-200 dark:border-surface-800 bg-white/80 dark:bg-surface-950/80 backdrop-blur-lg">
+    <div className="min-h-screen bg-surface-100 dark:bg-surface-950 transition-colors duration-300">
+      <header className="sticky top-0 z-40 border-b border-surface-200/60 dark:border-surface-800 bg-white/60 dark:bg-surface-950/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Logo />

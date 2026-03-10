@@ -1,11 +1,10 @@
-import { type InputHTMLAttributes, type Ref, memo } from "react";
+import { type InputHTMLAttributes, memo } from "react";
 import { cn } from "@/utils/cn";
 
 interface CheckboxProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "type"> {
   label?: string;
   hasError?: boolean;
-  ref?: Ref<HTMLInputElement>;
 }
 
 export const Checkbox = memo(function Checkbox({
@@ -13,7 +12,6 @@ export const Checkbox = memo(function Checkbox({
   hasError,
   className,
   id,
-  ref,
   ...rest
 }: CheckboxProps) {
   return (
@@ -26,7 +24,6 @@ export const Checkbox = memo(function Checkbox({
       )}
     >
       <input
-        ref={ref}
         type="checkbox"
         id={id}
         className={cn(

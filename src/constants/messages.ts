@@ -1,10 +1,12 @@
 export const ValidationMessages = {
   required: (label: string) => `${label} can't be left empty`,
   meaningfulText: (label: string) =>
-    `${label} must contain at least one letter or number`,
-  minLength: (n: number) => `Too short — use at least ${n} characters`,
-  maxLength: (n: number) => `Too long — keep it under ${n} characters`,
-  invalidPattern: "This doesn't look quite right — check the format",
+    `${label} must contain at least one letter`,
+  noSpecialChars: (label: string) =>
+    `${label} can only contain letters, numbers, and spaces`,
+  minLength: (n: number) => `Too short - use at least ${n} characters`,
+  maxLength: (n: number) => `Too long - keep it under ${n} characters`,
+  invalidPattern: "This doesn't look quite right - check the format",
   invalidPatternConfig:
     "Something's wrong with the validation rule. Try updating the pattern.",
   invalidNumber: "This needs to be a number",
@@ -17,21 +19,34 @@ export const ValidationMessages = {
 
 export const ToastMessages = {
   saveSuccess: "Your form has been saved!",
-  saveFailed: "We couldn't save your form — please try again.",
+  saveFailed: "We couldn't save your form - please try again.",
   exportSuccess: "Your form has been exported as JSON.",
   exportFailed: "Something went wrong while exporting. Give it another try.",
-  submitSuccess: "All done — form submitted successfully!",
+  submitSuccess: "All done - form submitted successfully!",
   submitInvalid:
-    "Some fields need your attention — scroll up to fix the highlighted errors.",
+    "Some fields need your attention - scroll up to fix the highlighted errors.",
   formNameRequired: "Give your form a name before proceeding.",
-  noFields: "Your form is empty — add at least one field to get started.",
+  noFields: "Your form is empty - add at least one field to get started.",
   deleteSuccess: "Form deleted.",
-  deleteFailed: "We couldn't delete the form — please try again.",
+  deleteFailed: "We couldn't delete the form - please try again.",
   loadFailed: "We couldn't load your saved forms right now.",
   fieldLabelInvalid: (position: number, fieldType: string) =>
     `Field #${position} (${fieldType}) has an invalid or missing label. Give it a proper name.`,
   optionLabelInvalid: (fieldLabel: string) =>
     `"${fieldLabel}" has an option with an invalid label. Fix it before saving.`,
+  optionValueEmpty: (fieldLabel: string) =>
+    `"${fieldLabel}" has an option with an empty value. Every option needs a value.`,
+  fieldAdded: (fieldType: string) => `${fieldType} added to your form.`,
+  fieldRemoved: "Field removed.",
+  fieldRemoveBlocked:
+    "This field is used in a conditional rule. Remove the rule first.",
+  fieldMoved: "Field position updated.",
+  ruleAdded: "Conditional rule added.",
+  ruleRemoved: "Conditional rule removed.",
+  formReset: "Form cleared - ready to start fresh.",
+  fieldRemoveConflict: (dependentLabels: string) =>
+    `Cannot remove this field - it is referenced by conditional rules on: ${dependentLabels}. Remove those conditions first.`,
+  fieldCount: (count: number) => `${count} field${count !== 1 ? "s" : ""}`,
 } as const;
 
 export const Themes = {
@@ -61,7 +76,9 @@ export const FormLabels = {
   defaultFieldLabel: "This field",
   defaultFilename: "form",
   checkboxFallbackLabel: "Checkbox",
+  untitledField: (fieldType: string) => `Untitled (${fieldType})`,
   lastSaved: "Last saved:",
+  whenPrefix: "when ",
   formLoaded: (name: string) => `Loaded "${name}"`,
   formEditing: (name: string) => `Editing "${name}"`,
 } as const;

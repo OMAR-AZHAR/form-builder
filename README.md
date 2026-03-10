@@ -1,6 +1,6 @@
 # Advanced Form Builder / Workflow Designer
 
-A production-quality, enterprise-grade dynamic form builder built with React 19, TypeScript 5, and modern tooling. Designed to let users create, configure, and persist complex forms with conditional logic, real-time validation, and drag-and-drop reordering — all within a live inline preview.
+A production-quality, enterprise-grade dynamic form builder built with React 19, TypeScript 5, and modern tooling. Designed to let users create, configure, and persist complex forms with conditional logic, real-time validation, and drag-and-drop reordering - all within a live inline preview.
 
 ## Quick Start
 
@@ -23,7 +23,7 @@ npm run build
 | Capability | Details |
 |---|---|
 | **Dynamic fields** | Add, remove, reorder (drag-and-drop) five field types: Text, Number, Select, Checkbox, Date |
-| **Live inline preview** | The form renders in real time as you build it — no separate preview mode needed |
+| **Live inline preview** | The form renders in real time as you build it - no separate preview mode needed |
 | **Conditional logic** | Show/hide fields and toggle required state based on other fields' values |
 | **Real-time validation** | Required checks, number ranges, regex patterns, date bounds, meaningful-content checks, custom error messages |
 | **Type safety** | Strict TypeScript throughout; discriminated unions, mapped types, zero `any` |
@@ -33,7 +33,7 @@ npm run build
 | **Theming** | Light and dark mode with system-preference detection |
 | **Responsive** | Adapts from mobile to wide desktop with a fluid layout |
 | **WCAG accessibility** | Contrast-compliant colours, keyboard-accessible controls, ARIA labels, focus-visible outlines |
-| **Centralized strings** | All UI labels, placeholders, messages, and aria labels in a single constants file — i18n-ready |
+| **Centralized strings** | All UI labels, placeholders, messages, and aria labels in a single constants file - i18n-ready |
 | **Testing** | 53 tests covering validation logic, store behaviour, and component rendering |
 
 ---
@@ -64,28 +64,28 @@ src/
 
 ### Layer responsibilities
 
-**Types** (`types/`) — Discriminated unions define every field shape. `FieldConfig` is a union of `TextFieldConfig | NumberFieldConfig | SelectFieldConfig | CheckboxFieldConfig | DateFieldConfig`, so the compiler enforces that you cannot access `.options` on a text field or `.pattern` on a number field. Conditional rules, validation results, and the serialisable `FormConfiguration` all live here as well.
+**Types** (`types/`) - Discriminated unions define every field shape. `FieldConfig` is a union of `TextFieldConfig | NumberFieldConfig | SelectFieldConfig | CheckboxFieldConfig | DateFieldConfig`, so the compiler enforces that you cannot access `.options` on a text field or `.pattern` on a number field. Conditional rules, validation results, and the serialisable `FormConfiguration` all live here as well.
 
-**Constants** (`constants/`) — All user-facing text is centralized in `messages.ts` using `as const` objects: `ValidationMessages`, `ToastMessages`, `AppLabels`, `FormLabels`, `ButtonLabels`, `SectionLabels`, `FieldConfigLabels`, `PlaceholderTexts`, `EmptyStateTexts`, and `AriaLabels`. Application config (`TEXT_MAX_LENGTH`) is read from environment variables via `config.ts`.
+**Constants** (`constants/`) - All user-facing text is centralized in `messages.ts` using `as const` objects: `ValidationMessages`, `ToastMessages`, `AppLabels`, `FormLabels`, `ButtonLabels`, `SectionLabels`, `FieldConfigLabels`, `PlaceholderTexts`, `EmptyStateTexts`, and `AriaLabels`. Application config (`TEXT_MAX_LENGTH`) is read from environment variables via `config.ts`.
 
-**Validation Engine** (`validation/engine.ts`) — A collection of pure functions with no React dependency. This is the single source of truth for "is this field visible?", "is this field required?", and "does this value satisfy the field's constraints?". Because they are pure functions operating on plain data, they are trivially testable and can be reused on a server if needed.
+**Validation Engine** (`validation/engine.ts`) - A collection of pure functions with no React dependency. This is the single source of truth for "is this field visible?", "is this field required?", and "does this value satisfy the field's constraints?". Because they are pure functions operating on plain data, they are trivially testable and can be reused on a server if needed.
 
-**State Management** (`store/`) — A Redux Toolkit slice holds the builder state: fields, conditions, form values, validation errors, and UI concerns like the selected field. Redux Toolkit was chosen because:
+**State Management** (`store/`) - A Redux Toolkit slice holds the builder state: fields, conditions, form values, validation errors, and UI concerns like the selected field. Redux Toolkit was chosen because:
 
 - `createSlice` with Immer provides concise, mutation-style reducers while preserving immutability.
 - The Redux DevTools extension gives production-grade debugging out of the box.
 - Typed hooks (`useAppSelector` / `useAppDispatch`) provide full TypeScript inference with minimal boilerplate.
 - Thunks allow imperative operations (e.g. validate-and-return, read-latest-state) while keeping reducers pure.
 
-**Mock API** (`api/mock-api.ts`) — A thin async layer with configurable latency (via `.env`). It mirrors a typical REST interface (`list`, `getById`, `save`, `remove`, `exportAsJson`) and stores data in `localStorage`. The storage key and simulated delay are read from environment variables. Swapping this for a real HTTP client is a single-file change.
+**Mock API** (`api/mock-api.ts`) - A thin async layer with configurable latency (via `.env`). It mirrors a typical REST interface (`list`, `getById`, `save`, `remove`, `exportAsJson`) and stores data in `localStorage`. The storage key and simulated delay are read from environment variables. Swapping this for a real HTTP client is a single-file change.
 
-**UI Primitives** (`components/ui/`) — `Button`, `Input`, `Select`, `Checkbox`, `FieldWrapper`, `Badge`, and `Toast`. Each is a `memo`-wrapped, prop-driven component with Tailwind utility classes. They accept standard HTML attributes via rest-spreading, so they compose naturally with forms, accessibility attributes, and event handlers.
+**UI Primitives** (`components/ui/`) - `Button`, `Input`, `Select`, `Checkbox`, `FieldWrapper`, `Badge`, and `Toast`. Each is a `memo`-wrapped, prop-driven component with Tailwind utility classes. They accept standard HTML attributes via rest-spreading, so they compose naturally with forms, accessibility attributes, and event handlers.
 
-**Field Renderer** (`components/fields/FieldRenderer.tsx`) — A single component that receives a `FieldConfig` and switches on `field.type` to render the correct UI primitive.
+**Field Renderer** (`components/fields/FieldRenderer.tsx`) - A single component that receives a `FieldConfig` and switches on `field.type` to render the correct UI primitive.
 
-**Builder** (`components/builder/`) — The workspace. Contains the field-type picker, per-field configurator panel with move up/down controls, conditional-rule editor, and saved-forms list with load/edit/delete.
+**Builder** (`components/builder/`) - The workspace. Contains the field-type picker, per-field configurator panel with move up/down controls, conditional-rule editor, and saved-forms list with load/edit/delete.
 
-**Preview** (`components/preview/FormPreview.tsx`) — Renders the form inline as a live preview. In building mode, fields are read-only with drag-and-drop reordering and a gear icon to open configuration. In view mode (loaded form), fields are interactive with a submit button and full validation.
+**Preview** (`components/preview/FormPreview.tsx`) - Renders the form inline as a live preview. In building mode, fields are read-only with drag-and-drop reordering and a gear icon to open configuration. In view mode (loaded form), fields are interactive with a submit button and full validation.
 
 ---
 
@@ -146,8 +146,8 @@ Each field type has its own validation branch in `validateField()`:
 
 Validation runs in two contexts:
 
-1. **Real-time** — Every keystroke triggers `setFormValue`, which validates that single field and updates the error map immediately.
-2. **On submit** — `validateForm()` runs all fields at once and prevents submission if any fail.
+1. **Real-time** - Every keystroke triggers `setFormValue`, which validates that single field and updates the error map immediately.
+2. **On submit** - `validateForm()` runs all fields at once and prevents submission if any fail.
 
 Additionally, form-level validation at save time checks that all field labels contain meaningful content (rejecting gibberish like `,,,,` or `////`).
 
@@ -155,7 +155,7 @@ Additionally, form-level validation at save time checks that all field labels co
 
 A `ConditionalRule` describes an action (`show`, `hide`, `require`, `unrequire`) to apply to a target field when one or more source-field conditions are met. Conditions support operators like `equals`, `not_equals`, `contains`, `greater_than`, `less_than`, `is_checked`, and `is_not_checked`, combined with `AND` or `OR` logic.
 
-The validation engine checks visibility before validation — hidden fields are automatically excluded from validation, which prevents phantom errors on fields the user cannot see.
+The validation engine checks visibility before validation - hidden fields are automatically excluded from validation, which prevents phantom errors on fields the user cannot see.
 
 ### Safety guardrails
 
@@ -167,15 +167,15 @@ Removing a field that is referenced as a condition source on *another* field is 
 
 The project uses **Tailwind CSS v4** with a custom theme defined in `index.css` using the `@theme` directive. The palette is built around purpose-named colour scales:
 
-- `primary` — Actions and focus rings
-- `surface` — Neutrals for backgrounds, borders, and text
-- `danger` / `success` / `warning` — Semantic feedback
+- `primary` - Actions and focus rings
+- `surface` - Neutrals for backgrounds, borders, and text
+- `danger` / `success` / `warning` - Semantic feedback
 
 Dark mode is controlled via the `dark` class on `<html>` (configured with `@variant dark`), toggled by a React hook that persists the preference to `localStorage` and respects the system preference on first visit.
 
 All text colours meet **WCAG AA contrast ratios** (4.5:1 minimum for normal text). Inter is loaded with optical sizing for improved readability at small sizes.
 
-Every UI primitive is self-contained — it applies its own light/dark variants, focus states, disabled styles, and error states through conditional Tailwind classes composed by a lightweight `cn()` utility.
+Every UI primitive is self-contained - it applies its own light/dark variants, focus states, disabled styles, and error states through conditional Tailwind classes composed by a lightweight `cn()` utility.
 
 ---
 
@@ -224,7 +224,7 @@ VITE_TEXT_MAX_LENGTH=100
 | **@dnd-kit** over react-beautiful-dnd | Actively maintained, accessible, modular, and lighter | react-beautiful-dnd is in maintenance mode |
 | **Pure validation functions** over a schema library (Zod/Yup) | Field rules are dynamic and user-defined at runtime; a schema library adds indirection without benefit here | Zod would work well if schemas were static |
 | **localStorage mock API** over MSW | Simpler setup for a standalone demo; no service worker configuration required | MSW would be better for testing HTTP-layer concerns |
-| **Single slice** over multiple slices | The form builder state is inherently connected — field edits affect conditions, conditions affect validation | Splitting would introduce synchronisation overhead |
+| **Single slice** over multiple slices | The form builder state is inherently connected - field edits affect conditions, conditions affect validation | Splitting would introduce synchronisation overhead |
 | **`as const` objects** over TypeScript `enum` | No runtime IIFE bloat, tree-shakeable, supports function values (e.g. parameterised validation messages), and recommended by the TypeScript team | Enums generate reverse-mapping wrappers, can't hold functions, and aren't dead-code eliminated |
 | **Inline live preview** over separate preview mode | Users see the form taking shape in real time; no context switching between builder and preview screens | Separate preview gives a cleaner end-user simulation but adds friction |
 

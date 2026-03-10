@@ -1,4 +1,4 @@
-import { memo, useEffect, useState, useCallback } from "react";
+import { memo, useEffect, useState } from "react";
 import type { FormConfiguration } from "@/types";
 import { formApi } from "@/api/mock-api";
 import { ToastMessages, SectionLabels, ButtonLabels, EmptyStateTexts, FormLabels } from "@/constants/messages";
@@ -21,21 +21,28 @@ export const SavedFormsList = memo(function SavedFormsList({
   const [forms, setForms] = useState<FormConfiguration[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const loadForms = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await formApi.list();
-      setForms(data.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)));
-    } catch {
-      onToast("error", ToastMessages.loadFailed);
-    } finally {
-      setLoading(false);
-    }
-  }, [onToast]);
-
   useEffect(() => {
+    let ignore = false;
+
+    async function loadForms() {
+      setLoading(true);
+      try {
+        const data = await formApi.list();
+        if (!ignore) {
+          setForms(data.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)));
+        }
+      } catch {
+        if (!ignore) onToast("error", ToastMessages.loadFailed);
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    }
+
     loadForms();
-  }, [loadForms, refreshKey]);
+    return () => {
+      ignore = true;
+    };
+  }, [onToast, refreshKey]);
 
   const handleDelete = async (id: string) => {
     try {
@@ -87,9 +94,9 @@ export const SavedFormsList = memo(function SavedFormsList({
               })}
             </span>
             <span className="mx-1">&middot;</span>
-            <span>{form.fields.length} fields</span>
+            <span>{ToastMessages.fieldCount(form.fields.length)}</span>
           </div>
-          <div className="flex gap-1.5">
+          <div className="flex flex-wrap gap-1.5">
             <Button
               variant="secondary"
               size="sm"

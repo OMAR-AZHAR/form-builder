@@ -16,7 +16,7 @@ import {
   isFormValid,
 } from "@/validation/engine";
 import type { AppThunk } from "./store";
-import { FormLabels } from "@/constants/messages";
+import { FormLabels, ToastMessages } from "@/constants/messages";
 
 interface FormBuilderState {
   formId: string;
@@ -50,6 +50,12 @@ function createInitialState(): FormBuilderState {
     saveError: null,
     lastSavedAt: null,
   };
+}
+
+function normalizeFieldOrder(fields: FieldConfig[]): void {
+  fields.forEach((f, i) => {
+    f.order = i;
+  });
 }
 
 function computeDefaults(fields: readonly FieldConfig[]): FormValues {
@@ -89,15 +95,13 @@ const formBuilderSlice = createSlice({
           })
           .join(", ");
 
-        state.saveError = `Cannot remove this field — it is referenced by conditions on: ${targetLabels}. Remove those conditions first.`;
+        state.saveError = ToastMessages.fieldRemoveConflict(targetLabels);
         return;
       }
 
       const idx = state.fields.findIndex((f) => f.id === id);
       if (idx !== -1) state.fields.splice(idx, 1);
-      state.fields.forEach((f, i) => {
-        f.order = i;
-      });
+      normalizeFieldOrder(state.fields);
 
       state.conditions = state.conditions.filter(
         (c) =>
@@ -134,9 +138,7 @@ const formBuilderSlice = createSlice({
 
       const [moved] = state.fields.splice(oldIndex, 1);
       state.fields.splice(newIndex, 0, moved);
-      state.fields.forEach((f, i) => {
-        f.order = i;
-      });
+      normalizeFieldOrder(state.fields);
       state.isDirty = true;
     },
 
@@ -152,9 +154,7 @@ const formBuilderSlice = createSlice({
 
       const [moved] = state.fields.splice(index, 1);
       state.fields.splice(targetIndex, 0, moved);
-      state.fields.forEach((f, i) => {
-        f.order = i;
-      });
+      normalizeFieldOrder(state.fields);
       state.isDirty = true;
     },
 
@@ -277,7 +277,7 @@ const formBuilderSlice = createSlice({
 });
 
 // ---------------------------------------------------------------------------
-// Thunks — imperative actions that need to read state and return a value
+// Thunks - imperative actions that need to read state and return a value
 // ---------------------------------------------------------------------------
 
 export const validateFormThunk =
@@ -301,6 +301,14 @@ export const getFormConfigThunk =
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
+  };
+
+export const removeFieldThunk =
+  (id: string): AppThunk<boolean> =>
+  (dispatch, getState) => {
+    const before = getState().formBuilder.fields.length;
+    dispatch(formBuilderSlice.actions.removeField(id));
+    return getState().formBuilder.fields.length < before;
   };
 
 // ---------------------------------------------------------------------------
