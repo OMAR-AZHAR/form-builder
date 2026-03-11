@@ -31,6 +31,7 @@ export function createField(type: FieldType, order: number): FieldConfig {
       return { ...base, type: FieldTypes.Checkbox, defaultValue: false };
     case FieldTypes.Date:
       return { ...base, type: FieldTypes.Date, defaultValue: "" };
+    // Exhaustiveness guard: compiler error if a new FieldType is added without a case here.
     default: {
       const _exhaustive: never = type;
       throw new Error(`Unknown field type: ${_exhaustive}`);

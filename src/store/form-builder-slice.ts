@@ -52,6 +52,7 @@ function createInitialState(): FormBuilderState {
   };
 }
 
+/** Re-index field order after splice/reorder so positions stay sequential. */
 function normalizeFieldOrder(fields: FieldConfig[]): void {
   fields.forEach((f, i) => {
     f.order = i;
@@ -68,6 +69,7 @@ function computeDefaults(fields: readonly FieldConfig[]): FormValues {
   return defaults;
 }
 
+/** Redux slice: fields, conditions, form values, validation errors, and UI state. */
 const formBuilderSlice = createSlice({
   name: "formBuilder",
   initialState: createInitialState(),
@@ -81,6 +83,7 @@ const formBuilderSlice = createSlice({
 
     removeField(state, action: PayloadAction<string>) {
       const id = action.payload;
+      // Rules that reference this field as a source — must be removed before the field can be deleted.
       const dependentConditions = state.conditions.filter(
         (c) =>
           c.conditions.some((fc) => fc.sourceFieldId === id) &&

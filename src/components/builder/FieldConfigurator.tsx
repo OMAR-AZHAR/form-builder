@@ -24,6 +24,7 @@ interface FieldConfiguratorProps {
   onClose: () => void;
 }
 
+/** Side panel for the selected field: label, placeholder, required, type-specific validation, and reorder/remove. */
 export const FieldConfigurator = memo(function FieldConfigurator({
   field,
   isFirst,

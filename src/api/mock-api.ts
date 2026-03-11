@@ -45,6 +45,7 @@ export const formApi = {
     return res.json();
   },
 
+  /** Upsert: checks existence first, then PUT (update) or POST (create). */
   async save(config: FormConfiguration): Promise<FormConfiguration> {
     const existing = await formApi.getById(config.id);
     const saved: FormConfiguration = {
@@ -100,6 +101,7 @@ export const formApi = {
       )[0];
       return latest?.rawValues ?? null;
     } catch {
+      // Graceful fallback — no submissions yet or API unavailable.
       return null;
     }
   },

@@ -59,6 +59,7 @@
     @apply bg-surface-950 text-surface-100;
   }
 
+  /* Respect user preference for reduced motion — disables all animations via higher specificity. */
   @media (prefers-reduced-motion: reduce) {
     html *,
     html *::before,

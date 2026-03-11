@@ -6,6 +6,7 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   children: ReactNode;
 }
 
+/** Native select with custom chevron SVG (separate light/dark variants). */
 export const Select = memo(function Select({
   hasError,
   className,

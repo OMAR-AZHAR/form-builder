@@ -12,6 +12,7 @@ interface SavedFormsListProps {
   refreshKey: number;
 }
 
+/** Lists saved forms from the API with preview/edit/delete actions. Refetches when refreshKey changes. */
 export const SavedFormsList = memo(function SavedFormsList({
   onLoad,
   onEdit,
@@ -22,6 +23,7 @@ export const SavedFormsList = memo(function SavedFormsList({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Prevent state updates after unmount (async race condition).
     let ignore = false;
 
     async function loadForms() {

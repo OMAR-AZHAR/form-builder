@@ -12,6 +12,7 @@ interface FieldWrapperProps {
   className?: string;
 }
 
+/** Wraps any form control with label, required indicator, inline error, and optional hint. */
 export const FieldWrapper = memo(function FieldWrapper({
   label,
   htmlFor,

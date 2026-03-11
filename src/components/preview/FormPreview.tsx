@@ -34,6 +34,7 @@ interface SortableFieldProps {
   onRemove: (fieldId: string) => void;
 }
 
+/** A single field in the preview — draggable in edit mode, interactive in view mode. */
 const SortableField = memo(function SortableField({
   field,
   isSelected,
@@ -133,6 +134,7 @@ interface FormPreviewProps {
   onSubmit: () => void;
 }
 
+/** Live form preview: read-only with drag handles in edit mode, interactive with submit in view mode. */
 export const FormPreview = memo(function FormPreview({
   formName,
   formDescription,
@@ -174,6 +176,7 @@ export const FormPreview = memo(function FormPreview({
     [onSubmit],
   );
 
+  // Edit mode shows all fields; view mode applies conditional show/hide rules.
   const visibleFields = isEditing
     ? fields
     : fields.filter((f) => isFieldVisible(f.id, conditions, formValues));
@@ -219,6 +222,7 @@ export const FormPreview = memo(function FormPreview({
           >
             <div className="space-y-5">
               {visibleFields.map((field) => {
+                // In view mode, required state can be overridden by conditional rules.
                 const effectiveField = isEditing
                   ? field
                   : { ...field, required: isFieldRequired(field, conditions, formValues) };

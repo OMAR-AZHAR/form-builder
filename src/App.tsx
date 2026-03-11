@@ -5,6 +5,7 @@ import { Logo } from "@/assets/logo";
 import { AppLabels, Themes } from "@/constants/messages";
 import { Sun, Moon } from "lucide-react";
 
+/** Root layout: header with theme toggle, main content area, and global toast container. */
 export default function App() {
   const { theme, toggleTheme } = useTheme();
   const { toasts, addToast, dismissToast } = useToasts();

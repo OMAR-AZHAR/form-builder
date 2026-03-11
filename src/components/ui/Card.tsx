@@ -6,6 +6,7 @@ interface CardProps {
   className?: string;
 }
 
+/** Frosted glass card — used for preview area, config panel, and empty states. */
 export const Card = memo(function Card({ children, className }: CardProps) {
   return (
     <div

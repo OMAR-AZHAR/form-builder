@@ -5,6 +5,7 @@ interface LogoProps {
   className?: string;
 }
 
+/** App logo SVG — form/document icon with primary colour theming. */
 export const Logo = memo(function Logo({ className }: LogoProps) {
   return (
     <svg

@@ -14,11 +14,14 @@ interface ToastProps {
   onDismiss: (id: string) => void;
 }
 
+/** Single toast with enter/exit animation and auto-dismiss timer. */
 const Toast = memo(function Toast({ toast, onDismiss }: ToastProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    // Force reflow so the CSS enter transition actually runs.
     requestAnimationFrame(() => setIsVisible(true));
+    // Two-phase dismiss: fade out first, then unmount after exit animation completes.
     let exitTimer: ReturnType<typeof setTimeout>;
     const timer = setTimeout(() => {
       setIsVisible(false);

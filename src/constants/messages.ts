@@ -1,3 +1,4 @@
+/** All user-facing strings: validation, toasts, labels, placeholders, ARIA. Centralised for i18n readiness. */
 export const ValidationMessages = {
   required: (label: string) => `${label} can't be left empty`,
   meaningfulText: (label: string) =>

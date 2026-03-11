@@ -5,6 +5,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   hasError?: boolean;
 }
 
+/** Text input with error state styling and frosted glass background. */
 export const Input = memo(function Input({
   hasError,
   className,

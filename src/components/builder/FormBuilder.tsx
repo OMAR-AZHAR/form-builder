@@ -50,6 +50,7 @@ interface FormBuilderProps {
   onToast: (type: "success" | "error" | "info", message: string) => void;
 }
 
+/** Main builder: sidebar with field types/rules/saved forms, live preview, and config panel. */
 export const FormBuilder = memo(function FormBuilder({
   onToast,
 }: FormBuilderProps) {
@@ -67,6 +68,7 @@ export const FormBuilder = memo(function FormBuilder({
     formDescription,
   } = useAppSelector((s) => s.formBuilder);
 
+  // Increment to force SavedFormsList to refetch after a save.
   const [savedFormsKey, setSavedFormsKey] = useState(0);
   const [formNameError, setFormNameError] = useState<string | null>(null);
   const [isViewMode, setIsViewMode] = useState(false);
@@ -180,6 +182,7 @@ export const FormBuilder = memo(function FormBuilder({
     setIsSubmitting(true);
     try {
       const config = dispatch(getFormConfigThunk());
+      // Map field IDs to human-readable labels for the submission payload.
       const labeledValues: Record<string, FieldValue> = {};
       for (const field of config.fields) {
         labeledValues[field.label || field.id] = formValues[field.id];

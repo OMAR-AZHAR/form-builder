@@ -8,6 +8,7 @@ interface ErrorBannerProps {
   onDismiss?: () => void;
 }
 
+/** Dismissible error alert with icon and danger styling. */
 export const ErrorBanner = memo(function ErrorBanner({
   children,
   onDismiss,

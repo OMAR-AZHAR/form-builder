@@ -5,6 +5,7 @@ import { store } from "./store/store";
 import App from "./App.tsx";
 import "./index.css";
 
+/** Entry point: mounts React with Redux Provider inside StrictMode. */
 const root = document.getElementById("root");
 if (!root) throw new Error("Root element not found");
 

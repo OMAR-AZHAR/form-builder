@@ -7,6 +7,7 @@ interface SectionHeaderProps {
   as?: "h2" | "h3" | "h4" | "p";
 }
 
+/** Uppercase section heading — renders as h3 by default, configurable via `as` prop for semantics. */
 export const SectionHeader = memo(function SectionHeader({
   children,
   className,

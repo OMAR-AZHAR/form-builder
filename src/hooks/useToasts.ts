@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import type { ToastMessage } from "@/components/ui/Toast";
 
+/** Simple toast queue — tracks messages with unique IDs for add/dismiss. */
 export function useToasts() {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 

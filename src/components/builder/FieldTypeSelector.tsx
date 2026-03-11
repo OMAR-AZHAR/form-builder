@@ -23,6 +23,7 @@ interface FieldTypeSelectorProps {
   onSelect: (type: FieldType) => void;
 }
 
+/** Sidebar buttons to add each field type (text, number, select, checkbox, date). */
 export const FieldTypeSelector = memo(function FieldTypeSelector({
   onSelect,
 }: FieldTypeSelectorProps) {

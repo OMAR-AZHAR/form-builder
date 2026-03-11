@@ -7,6 +7,7 @@ interface CheckboxProps
   hasError?: boolean;
 }
 
+/** Checkbox with optional label text and error border. */
 export const Checkbox = memo(function Checkbox({
   label,
   hasError,

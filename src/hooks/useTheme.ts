@@ -15,9 +15,11 @@ function getInitialTheme(): Theme {
     : Themes.Light;
 }
 
+/** Theme state with localStorage persistence, system preference fallback, and zero-flash on reload. */
 export function useTheme() {
   const [theme, setThemeState] = useState<Theme>(getInitialTheme);
 
+  // Sync DOM class before paint to prevent flash of wrong theme during toggles.
   useLayoutEffect(() => {
     document.documentElement.classList.toggle(Themes.Dark, theme === Themes.Dark);
     try {

@@ -28,6 +28,7 @@ const sizeStyles: Record<ButtonSize, string> = {
   lg: "px-5 py-2.5 text-base gap-2.5",
 };
 
+/** Button primitive with variants, sizes, icon slot, loading spinner, and safe type="button" default. */
 export const Button = memo(function Button({
   variant = "primary",
   size = "md",

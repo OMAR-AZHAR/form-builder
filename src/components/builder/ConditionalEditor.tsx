@@ -42,6 +42,7 @@ const EMPTY_CONDITION: FieldCondition = {
   value: "",
 };
 
+/** UI for creating/viewing conditional rules (show/hide/require based on another field's value). */
 export const ConditionalEditor = memo(function ConditionalEditor({
   fields,
   conditions,
@@ -66,6 +67,7 @@ export const ConditionalEditor = memo(function ConditionalEditor({
     setIsAdding(false);
   }, []);
 
+  // Rule is valid when: target chosen, source chosen, source ≠ target, and value provided (except checkbox operators).
   const canSave =
     draft.targetFieldId &&
     draft.conditions.length > 0 &&
@@ -100,6 +102,7 @@ export const ConditionalEditor = memo(function ConditionalEditor({
     return fields.find((f) => f.id === condition.sourceFieldId);
   };
 
+  /** Restrict available operators by source field type (e.g. checkbox only gets is_checked/is_not_checked). */
   const getOperatorsForField = (field: FieldConfig | undefined) => {
     if (!field) return CONDITION_OPERATORS;
     if (field.type === FieldTypes.Checkbox) {
