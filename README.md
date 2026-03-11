@@ -44,12 +44,12 @@ npm run build
 | **Persistence** | Save/load/edit/preview/delete form configurations; submitted values are stored and restored on re-open |
 | **Export** | Download form configuration as a portable JSON file |
 | **Build vs View mode** | Build mode: fields are read-only with drag handles and delete buttons. View mode: fields are interactive with a Submit button |
-| **Theming** | Light (frosted glass) and dark mode with system-preference detection, localStorage persistence, and zero-flash on reload |
+| **Theming** | Light (frosted glass) and dark mode with system-preference detection and localStorage persistence |
 | **Responsive** | Adapts from mobile to wide desktop with a fluid layout |
 | **WCAG accessibility** | Contrast-compliant colours, `prefers-reduced-motion` support, keyboard-accessible controls, ARIA labels, `focus-visible` outlines |
 | **Centralized strings** | All UI labels, placeholders, messages, and ARIA labels in a single constants file -- i18n-ready |
 | **Toast feedback** | Every user action (add/remove/reorder field, save, export, submit, reset, rule add/remove) triggers a toast notification |
-| **Reusable components** | All UI elements use shared primitives: `Button`, `Input`, `Select`, `Checkbox`, `FieldWrapper`, `Card`, `SectionHeader`, `ErrorBanner`, `Toast` |
+| **Reusable components** | All UI elements use shared primitives: `Button`, `Input`, `Select`, `Checkbox`, `FieldWrapper`, `Card`, `SectionHeader`, `ErrorBanner`, `ToastContainer` |
 | **Testing** | 53 tests covering validation logic, store behaviour, and component rendering |
 
 ---
@@ -82,7 +82,7 @@ src/
 
 **Types** (`types/`) -- Discriminated unions define every field shape. `FieldConfig` is a union of `TextFieldConfig | NumberFieldConfig | SelectFieldConfig | CheckboxFieldConfig | DateFieldConfig`. Conditional rules, validation results, and the serialisable `FormConfiguration` all live here.
 
-**Constants** (`constants/`) -- All user-facing text centralized in `messages.ts` using `as const` objects: `ValidationMessages`, `ToastMessages`, `AppLabels`, `FormLabels`, `ButtonLabels`, `SectionLabels`, `FieldConfigLabels`, `PlaceholderTexts`, `EmptyStateTexts`, `AriaLabels`, `Themes`, `LogicOperators`. Environment-driven config (`API_BASE_URL`, `TEXT_MAX_LENGTH`, `THEME_STORAGE_KEY`, `TOAST_DURATION_MS`) in `config.ts`.
+**Constants** (`constants/`) -- All user-facing text centralized in `messages.ts` using `as const` objects: `ValidationMessages`, `ToastMessages`, `AppLabels`, `FormLabels`, `ButtonLabels`, `SectionLabels`, `FieldConfigLabels`, `PlaceholderTexts`, `EmptyStateTexts`, `AriaLabels`, `Themes`, `LogicOperators`. Environment-driven config (`API_BASE_URL`, `TEXT_MAX_LENGTH`, `THEME_STORAGE_KEY`) and constants (`TOAST_DURATION_MS`) in `config.ts`.
 
 **Validation Engine** (`validation/engine.ts`) -- Pure functions: `isFieldVisible`, `isFieldRequired`, `validateField`, `validateAllFields`, `isFormValid`. No React dependency; reusable server-side.
 
@@ -90,11 +90,11 @@ src/
 
 **API Client** (`api/mock-api.ts`) -- REST client backed by json-server. Centralized `ENDPOINTS` object, shared `request<T>()` helper, typed `FormSubmission` interface. Endpoints: `list`, `getById`, `save`, `remove`, `submitForm`, `getLastSubmission`.
 
-**Hooks** (`hooks/`) -- `useTheme` manages light/dark mode with `useLayoutEffect`, system-preference detection, localStorage persistence, and inline `<script>` for zero-flash on reload. `useToasts` manages ephemeral toast notifications with auto-dismiss.
+**Hooks** (`hooks/`) -- `useTheme` manages light/dark mode with `useLayoutEffect`, system-preference detection, and localStorage persistence. `useToasts` manages ephemeral toast notifications with auto-dismiss.
 
 **Utils** (`utils/`) -- `cn` merges class names. `createField` produces type-safe defaults with exhaustiveness checking. `sanitize` provides `hasMeaningfulContent` and `isValidLabel`. `form-actions` provides `downloadJson`, `exportAsJsonFile`, `validateFormName`, `validateFieldLabels`.
 
-**UI Primitives** (`components/ui/`) -- `Button` (with `type="button"` default), `Input`, `Select`, `Checkbox`, `FieldWrapper`, `Card` (frosted glass panel), `SectionHeader` (uppercase section title), `ErrorBanner` (dismissible error alert), `ToastContainer`. All `memo`-wrapped with Tailwind utility classes.
+**UI Primitives** (`components/ui/`) -- `Button` (with `type="button"` default), `Input`, `Select`, `Checkbox`, `FieldWrapper`, `Card` (frosted glass panel), `SectionHeader` (uppercase section title), `ErrorBanner` (dismissible error alert), `ToastContainer`. All leaf components `memo`-wrapped with Tailwind utility classes (`ToastContainer` is a plain wrapper).
 
 **Builder** (`components/builder/`) -- Field-type picker, per-field configurator with move up/down and remove controls, conditional-rule editor, saved-forms list with preview/edit/delete.
 
@@ -154,7 +154,7 @@ A `ConditionalRule` describes an action (`show`, `hide`, `require`, `unrequire`)
 **Tailwind CSS v4** with custom `@theme` in `index.css`. Purpose-named colour scales: `primary`, `surface`, `danger`, `success`, `warning`.
 
 - **Frosted glass light mode** -- `bg-white/70 backdrop-blur-lg` with semi-transparent borders
-- **Dark mode** -- `@variant dark` with `dark` class on `<html>`. Zero-flash on reload via inline blocking `<script>` + `useLayoutEffect`
+- **Dark mode** -- `@variant dark` with `dark` class on `<html>`. `useLayoutEffect` applies the saved theme before paint
 - **WCAG AA** -- All text meets 4.5:1 contrast ratio. Inter with optical sizing
 - **`prefers-reduced-motion`** -- Global media query disables animations/transitions
 - **No `transition-all`** -- Each component transitions only specific properties
@@ -190,9 +190,6 @@ VITE_THEME_STORAGE_KEY=form_builder_theme
 | No `transition-all` | Specific property transitions avoid expensive repaints |
 | `prefers-reduced-motion` | Disables all animations for accessibility |
 | `useLayoutEffect` for theme | Prevents flicker during theme toggle |
-| Inline theme script | Prevents white flash on page reload |
-| Code splitting | Vendor (React, Redux) and dnd chunks cached independently |
-| esbuild minification | `console`/`debugger` dropped; no legal comments |
 | `Button type="button"` default | Prevents accidental form submissions |
 
 ---
@@ -215,7 +212,7 @@ VITE_THEME_STORAGE_KEY=form_builder_theme
 |---|---|---|
 | **Redux Toolkit** over Zustand / plain Redux | `createSlice` with Immer; DevTools built-in; typed hooks | Zustand lighter but lacks DevTools; plain Redux needs more boilerplate |
 | **json-server** for API | Real REST endpoints; data persisted in `db.json`; inspectable with curl/DevTools | localStorage is simpler but not a real API; MSW requires service worker setup |
-| **localStorage** for theme | Persists across refreshes; simple synchronous read for inline script | Cookie would work for SSR; IndexedDB is overkill for a single string |
+| **localStorage** for theme | Persists across refreshes; simple synchronous read in `useLayoutEffect` | Cookie would work for SSR; IndexedDB is overkill for a single string |
 | **Tailwind CSS v4** over CSS Modules | Utility-first with built-in dark mode; co-located styles | CSS Modules give scoped names but add files |
 | **@dnd-kit** over react-beautiful-dnd | Actively maintained, accessible, modular | react-beautiful-dnd in maintenance mode |
 | **Pure validation functions** over Zod/Yup | Dynamic user-defined rules; schema library adds indirection | Zod works for static schemas |
@@ -250,7 +247,7 @@ npm run validate      # Full pipeline: typecheck + lint + test + build
 |---|---|---|
 | React | 19 | UI library |
 | TypeScript | 5.9 | Static typing |
-| Vite | 7 | Build tool, dev server, esbuild minification |
+| Vite | 7 | Build tool, dev server |
 | Redux Toolkit | 2.x | State management with Immer and DevTools |
 | React-Redux | 9.x | Official React bindings |
 | @dnd-kit | Latest | Accessible drag-and-drop |
