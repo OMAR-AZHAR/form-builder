@@ -6,6 +6,7 @@ export { FieldWrapper } from "./FieldWrapper";
 export { Card } from "./Card";
 export { SectionHeader } from "./SectionHeader";
 export { ErrorBanner } from "./ErrorBanner";
+export { ErrorBoundary } from "./ErrorBoundary";
 export { ToastContainer } from "./Toast";
 export type { ToastMessage } from "./Toast";
 export { useToasts } from "@/hooks/useToasts";

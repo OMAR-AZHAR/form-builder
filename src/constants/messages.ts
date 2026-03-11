@@ -158,6 +158,13 @@ export const EmptyStateTexts = {
   noSavedForms: "No saved forms yet. Build a form and hit Save.",
 } as const;
 
+export const ErrorBoundaryLabels = {
+  title: "Something went wrong",
+  description:
+    "An unexpected error occurred while rendering. You can try again, or refresh the page if the problem persists.",
+  retry: "Try Again",
+} as const;
+
 export const AriaLabels = {
   dragToReorder: "Drag to reorder",
   closeConfigurator: "Close configurator",
