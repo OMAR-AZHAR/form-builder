@@ -3,6 +3,8 @@ import { FieldTypes, FIELD_TYPE_LABELS } from "@/types";
 import { ToastMessages, ValidationMessages, FormLabels } from "@/constants/messages";
 import { isValidLabel } from "@/utils/sanitize";
 
+const JSON_INDENT = 2;
+
 /**
  * Triggers a browser download of a JSON string as a file.
  */
@@ -14,6 +16,13 @@ export function downloadJson(data: string, filename: string): void {
   a.download = filename;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+/**
+ * Serializes data to a formatted JSON string and triggers a download.
+ */
+export function exportAsJsonFile(data: unknown, filename: string): void {
+  downloadJson(JSON.stringify(data, null, JSON_INDENT), filename);
 }
 
 /**

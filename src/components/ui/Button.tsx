@@ -36,10 +36,12 @@ export const Button = memo(function Button({
   disabled,
   className,
   children,
+  type = "button",
   ...rest
 }: ButtonProps) {
   return (
     <button
+      type={type}
       className={cn(
         "inline-flex items-center justify-center rounded-lg font-medium cursor-pointer",
         "transition-colors duration-150",

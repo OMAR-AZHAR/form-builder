@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useLayoutEffect, useCallback } from "react";
 import { Themes, type Theme } from "@/constants/messages";
 import { THEME_STORAGE_KEY } from "@/constants/config";
 
@@ -18,7 +18,7 @@ function getInitialTheme(): Theme {
 export function useTheme() {
   const [theme, setThemeState] = useState<Theme>(getInitialTheme);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.documentElement.classList.toggle(Themes.Dark, theme === Themes.Dark);
     try {
       localStorage.setItem(THEME_STORAGE_KEY, theme);

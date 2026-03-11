@@ -181,6 +181,11 @@ const formBuilderSlice = createSlice({
       state.validationErrors = {};
     },
 
+    loadFormValues(state, action: PayloadAction<FormValues>) {
+      state.formValues = { ...computeDefaults(state.fields), ...action.payload };
+      state.validationErrors = {};
+    },
+
     addCondition(state, action: PayloadAction<Omit<ConditionalRule, "id">>) {
       state.conditions.push({ ...action.payload, id: nanoid(10) });
       state.isDirty = true;
@@ -324,6 +329,7 @@ export const {
   moveField,
   setFormValue,
   resetFormValues,
+  loadFormValues,
   addCondition,
   removeCondition,
   updateCondition,

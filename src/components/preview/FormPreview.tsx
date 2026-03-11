@@ -125,6 +125,7 @@ interface FormPreviewProps {
   validationErrors: ValidationResult;
   selectedFieldId: string | null;
   isEditing: boolean;
+  isSubmitting: boolean;
   onFieldChange: (fieldId: string, value: FieldValue) => void;
   onFieldSelect: (fieldId: string) => void;
   onRemove: (fieldId: string) => void;
@@ -141,6 +142,7 @@ export const FormPreview = memo(function FormPreview({
   validationErrors,
   selectedFieldId,
   isEditing,
+  isSubmitting,
   onFieldChange,
   onFieldSelect,
   onRemove,
@@ -172,9 +174,9 @@ export const FormPreview = memo(function FormPreview({
     [onSubmit],
   );
 
-  const visibleFields = fields.filter((f) =>
-    isFieldVisible(f.id, conditions, formValues),
-  );
+  const visibleFields = isEditing
+    ? fields
+    : fields.filter((f) => isFieldVisible(f.id, conditions, formValues));
 
   if (fields.length === 0) {
     return (
@@ -217,10 +219,9 @@ export const FormPreview = memo(function FormPreview({
           >
             <div className="space-y-5">
               {visibleFields.map((field) => {
-                const effectiveField = {
-                  ...field,
-                  required: isFieldRequired(field, conditions, formValues),
-                };
+                const effectiveField = isEditing
+                  ? field
+                  : { ...field, required: isFieldRequired(field, conditions, formValues) };
                 return (
                   <SortableField
                     key={field.id}
@@ -251,6 +252,8 @@ export const FormPreview = memo(function FormPreview({
               type="submit"
               size="lg"
               icon={<Send className="h-4 w-4" />}
+              loading={isSubmitting}
+              disabled={isSubmitting}
             >
               {ButtonLabels.submit}
             </Button>

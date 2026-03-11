@@ -14,6 +14,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "api": "json-server db.json --port 3001",
     "validate": "npm run typecheck && npm run lint && npm test && npm run build"
   },
   "dependencies": {
@@ -42,6 +43,7 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
     "jsdom": "^28.1.0",
+    "json-server": "^1.0.0-beta.12",
     "tailwindcss": "^4.2.1",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.48.0",

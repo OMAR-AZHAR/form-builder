@@ -13,6 +13,7 @@ import {
   setFormName,
   setFormDescription,
   loadFormConfiguration,
+  loadFormValues,
   resetForm,
   setSaving,
   setSaveError,
@@ -25,7 +26,7 @@ import { formApi } from "@/api/mock-api";
 import { ToastMessages, FormLabels, ButtonLabels } from "@/constants/messages";
 import { TEXT_MAX_LENGTH } from "@/constants/config";
 import {
-  downloadJson,
+  exportAsJsonFile,
   validateFormName as checkFormName,
   validateFieldLabels,
 } from "@/utils/form-actions";
@@ -69,6 +70,7 @@ export const FormBuilder = memo(function FormBuilder({
   const [savedFormsKey, setSavedFormsKey] = useState(0);
   const [formNameError, setFormNameError] = useState<string | null>(null);
   const [isViewMode, setIsViewMode] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const selectedField = fields.find((f) => f.id === selectedFieldId);
   const selectedFieldIndex = selectedField
@@ -128,11 +130,10 @@ export const FormBuilder = memo(function FormBuilder({
     }
   }, [dispatch, fields, validateName, onToast]);
 
-  const handleExport = useCallback(async () => {
+  const handleExport = useCallback(() => {
     try {
       const config = dispatch(getFormConfigThunk());
-      const json = await formApi.exportAsJson(config);
-      downloadJson(json, `${config.name || FormLabels.defaultFilename}.json`);
+      exportAsJsonFile(config, `${config.name || FormLabels.defaultFilename}.json`);
       onToast("success", ToastMessages.exportSuccess);
     } catch {
       onToast("error", ToastMessages.exportFailed);
@@ -140,10 +141,20 @@ export const FormBuilder = memo(function FormBuilder({
   }, [dispatch, onToast]);
 
   const handleLoadForm = useCallback(
-    (config: FormConfiguration) => {
+    async (config: FormConfiguration) => {
       dispatch(loadFormConfiguration(config));
       setIsViewMode(true);
       setFormNameError(null);
+
+      try {
+        const savedValues = await formApi.getLastSubmission(config.id);
+        if (savedValues) {
+          dispatch(loadFormValues(savedValues));
+        }
+      } catch {
+        /* no saved submission — start with defaults */
+      }
+
       onToast("info", FormLabels.formLoaded(config.name));
     },
     [dispatch, onToast],
@@ -166,18 +177,23 @@ export const FormBuilder = memo(function FormBuilder({
       return;
     }
 
+    setIsSubmitting(true);
     try {
       const config = dispatch(getFormConfigThunk());
       const labeledValues: Record<string, FieldValue> = {};
       for (const field of config.fields) {
         labeledValues[field.label || field.id] = formValues[field.id];
       }
-      await formApi.submitForm(config.id, labeledValues);
+      await formApi.submitForm(config.id, labeledValues, formValues);
       onToast("success", ToastMessages.submitSuccess);
+      dispatch(resetForm());
+      setIsViewMode(false);
     } catch {
       onToast("error", ToastMessages.saveFailed);
+    } finally {
+      setIsSubmitting(false);
     }
-  }, [dispatch, fields, formValues, onToast]);
+  }, [dispatch, formValues, onToast]);
 
   const handleFieldChange = useCallback(
     (fieldId: string, value: FieldValue) =>
@@ -349,6 +365,7 @@ export const FormBuilder = memo(function FormBuilder({
           validationErrors={validationErrors}
           selectedFieldId={selectedFieldId}
           isEditing={!isViewMode}
+          isSubmitting={isSubmitting}
           onFieldChange={handleFieldChange}
           onFieldSelect={handleSelectField}
           onRemove={handleRemoveField}

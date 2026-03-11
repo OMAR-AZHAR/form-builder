@@ -12,6 +12,9 @@ export default defineConfig(({ mode }) => {
     server: {
       host: env.VITE_APP_HOST || "localhost",
       port: Number(env.VITE_APP_PORT) || 5173,
+      watch: {
+        ignored: ["**/db.json"],
+      },
     },
     resolve: {
       alias: {

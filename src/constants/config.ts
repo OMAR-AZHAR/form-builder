@@ -1,3 +1,6 @@
+export const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3001";
+
 export const TEXT_MAX_LENGTH = Number(
   import.meta.env.VITE_TEXT_MAX_LENGTH ?? 100,
 );
